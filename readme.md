@@ -1,5 +1,5 @@
 
-To run project
+To run project:
 
 ```
 cd cardity
