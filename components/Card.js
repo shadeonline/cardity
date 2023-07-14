@@ -3,29 +3,26 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image } from 'react-native';
 import { Cell } from 'react-native-tableview-simple';
 
-const Card = ({ name, cardNum, imgUri, action, card }) => {
+const Card = ({ name, cardId, imgUri, redirect, card }) => {
   const navigation = useNavigation();
   const handlePress = () => {
-    if (action === 'Details') {
+    if (redirect === 'Details') {
       navigation.navigate('Details', { card });
     }
-    else{
+    else {
       navigation.navigate('Loyalty Cards');
     }
   };
 
   return (
     <Cell
-      onPress={action ? handlePress : undefined}
+      onPress={redirect ? handlePress : undefined}
       contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', height: 290, width: '100%', backgroundColor: 'transparent', highlightColor: '#ccc' }}
       cellContentView={
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Image source={imgUri} style={[styles.image, { height: '80%', aspectRatio: 15 / 9 }]} />
-          <View style={styles.cardTitleContainer}>
-            <Text style={styles.titleText}>{name}</Text>
-          </View>
-
-          <Text style={styles.cardNumText}>Card No.: {cardNum}</Text>
+          <Text style={styles.cardNameText}>{name}</Text>
+          <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
         </View>
       }
     />
@@ -56,7 +53,7 @@ const styles = {
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  cardNumText: {
+  cardIdText: {
     position: 'absolute',
     top: '55%',
     left: '8%',
@@ -65,6 +62,19 @@ const styles = {
     paddingVertical: 4,
     alignItems: 'center',
   },
+  cardNameText: {
+    position: 'absolute',
+    top: '10%',
+    left: '8%',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    alignItems: 'center',
+    color: 'black',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  }
 };
 
 export default Card;

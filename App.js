@@ -8,31 +8,51 @@ import { Cell, Section, TableView, Separator } from 'react-native-tableview-simp
 
 import Card from './components/Card.js';
 import HomeScreen from './components/HomeScreen.js';
+import DetailScreen from './components/DetailScreen.js';
 
 const Stack = createStackNavigator();
 
-
-
-const DetailScreen = ({ route }) => {
-  const { card } = route.params;
-  return (
-    <ScrollView>
-      <Card
-        name={card.name}
-        cardNum={card.cardNum}
-        imgUri={card.imgUri}
-        card={card}
-      />
-    </ScrollView>
-  );
-};
-
-
 export default function App() {
+  const [cards, setCards] = useState([
+    {
+      "name": "The Ice Cream Shop",
+      "cardId": "1111111",
+      "imgUri": require("./assets/icecreamRestaurant.jpeg"),
+      "progress": 6
+    },
+    {
+      "name": "Ichiban Ramen",
+      "cardId": "2222222",
+      "imgUri": require("./assets/japaneseRestaurant.jpeg"),
+      "progress": 1
+    },
+    {
+      "name": "Cafe La France",
+      "cardId": "3333333",
+      "imgUri": require("./assets/franceRestaurant.jpeg"),
+      "progress": 1
+    },
+  ]);
+
+  const updateCardProgress = (cardId, newProgress) => {
+    setCards(prevCards => {
+      return prevCards.map(card => {
+        if (card.cardId === cardId) {
+          return { ...card, progress: newProgress };
+        }
+        return card;
+      });
+    });
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Loyalty Cards" component={HomeScreen} />
+        <Stack.Screen name="Loyalty Cards">
+          {(props) => (
+            <HomeScreen {...props} cards={cards}/>
+          )}
+        </Stack.Screen>
         <Stack.Screen name="Details" component={DetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
