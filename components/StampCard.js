@@ -19,17 +19,17 @@ const StampCard = ({ rows, stampsPerRow, progress }) => {
               {isFilled && (
                 <Image source={require('../assets/stamp.png')} style={styles.stampImage} />
               )}
-              
+
             </View>
           );
         } else {
           row.push(
+            // Add numbers to each stamp and render img on top if stamp is filled
             <View key={stampKey} style={styles.stamp}>
               <Text>{stampKey + 1}</Text>
               {isFilled && (
                 <Image source={require('../assets/stamp.png')} style={styles.stampImage} />
               )}
-              
             </View>
           );
         }
@@ -45,13 +45,20 @@ const StampCard = ({ rows, stampsPerRow, progress }) => {
   };
 
   return (
-  <View style={styles.container}>
-    {renderStampRows()}
-  </View>
+    <View style={styles.container}>
+      <Text style={styles.header}>Stamps Collected!</Text>
+      {renderStampRows()}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    textAlign: 'center',
+    fontSize: 25,
+    paddingVertical: 10,
+    
+  },
   container: {
     width: '100%',
     paddingHorizontal: 10,
