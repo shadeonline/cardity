@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 
 const StampTaskModal = ({ selectedStamp, progress, onCloseModal, stampsPerRow }) => {
+
+  // Logic to decide what text to display on the modal for each stamp
   const renderModalContent = () => {
     if (((selectedStamp + 1) % stampsPerRow === 0 && progress < selectedStamp)) {
       return (

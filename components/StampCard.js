@@ -4,11 +4,13 @@ import StampTaskModal from './StampTaskModal';
 const StampCard = ({ rows, stampsPerRow, progress }) => {
   const [selectedStamp, setSelectedStamp] = useState(null);
 
+  // Clicking on stamps will display their stampkey number
   const handleStampPress = (stampKey) => {
     setSelectedStamp(stampKey);
     console.log(stampKey)
   };
 
+  // Display Stamp Rows
   const renderStampRows = () => {
     const stamps = [];
 
@@ -62,6 +64,7 @@ const StampCard = ({ rows, stampsPerRow, progress }) => {
     return stamps;
   };
 
+  // Closing of Modal
   const handleCloseModal = () => {
     setSelectedStamp(null);
   };
