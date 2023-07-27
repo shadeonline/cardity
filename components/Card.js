@@ -5,6 +5,7 @@ import { Cell } from 'react-native-tableview-simple';
 
 const Card = ({ name, cardId, imgUri, redirect, card }) => {
   const navigation = useNavigation();
+  // Check if redirect is blank ornot if redirect is not blank then redirect it to the desired view, else do nth
   const handlePress = () => {
     if (redirect === 'Details') {
       navigation.navigate('Details', { card });

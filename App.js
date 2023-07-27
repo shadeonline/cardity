@@ -7,8 +7,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Cell, Section, TableView, Separator } from 'react-native-tableview-simple';
 
 import Card from './components/Card.js';
-import HomeScreen from './components/HomeScreen.js';
-import DetailScreen from './components/DetailScreen.js';
+import HomeScreenView from './components/HomeScreenView.js';
+import DetailScreenView from './components/DetailScreenView.js';
 
 const Stack = createStackNavigator();
 
@@ -50,10 +50,10 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Loyalty Cards">
           {(props) => (
-            <HomeScreen {...props} cards={cards}/>
+            <HomeScreenView {...props} cards={cards}/>
           )}
         </Stack.Screen>
-        <Stack.Screen name="Details" component={DetailScreen} />
+        <Stack.Screen name="Details" component={DetailScreenView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

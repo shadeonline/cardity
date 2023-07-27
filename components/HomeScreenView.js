@@ -4,8 +4,8 @@ import { ScrollView } from 'react-native';
 import { TableView } from 'react-native-tableview-simple';
 import Card from './Card.js';
 
-
-const HomeScreen = ({ cards }) => {
+// Render cards according to the cards argument received
+const HomeScreenView = ({ cards }) => {
 
   return (
     <ScrollView>
@@ -25,4 +25,4 @@ const HomeScreen = ({ cards }) => {
   );
 };
 
-export default HomeScreen;
+export default HomeScreenView;

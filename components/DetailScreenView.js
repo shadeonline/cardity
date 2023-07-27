@@ -8,7 +8,7 @@ import RewardView from './RewardView.js';
 
 const Tab = createBottomTabNavigator();
 
-const DetailScreen = ({ route }) => {
+const DetailScreenView = ({ route }) => {
     const { card } = route.params;
 
     return (
@@ -58,4 +58,4 @@ const styles = {
     },
 };
 
-export default DetailScreen;
+export default DetailScreenView;
