@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/core'
 import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { TableView } from 'react-native-tableview-simple';
-import Card from './Card.js';
+import Card from '../components/Card.js';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase'
 

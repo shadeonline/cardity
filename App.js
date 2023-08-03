@@ -4,9 +4,9 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import HomeScreenView from './components/HomeScreenView.js';
-import DetailScreenView from './components/DetailScreenView.js';
-import LoginScreenView from './components/LoginScreenView.js';
+import HomeScreenView from './screens/HomeScreenView.js';
+import DetailScreenView from './screens/DetailScreenView.js';
+import LoginScreenView from './screens/LoginScreenView.js';
 
 
 

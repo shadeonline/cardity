@@ -2,8 +2,8 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, Image } from 'react-native';
 
-import ProgressView from './ProgressView.js';
-import RewardView from './RewardView.js';
+import ProgressView from '../components/ProgressView.js';
+import RewardView from '../components/RewardView.js';
 
 
 const Tab = createBottomTabNavigator();
