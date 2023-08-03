@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Cell, Section, TableView, Separator } from 'react-native-tableview-simple';
 
-import Card from './components/Card.js';
 import HomeScreenView from './components/HomeScreenView.js';
 import DetailScreenView from './components/DetailScreenView.js';
+import LoginScreenView from './components/LoginScreenView.js';
+
+
 
 const Stack = createStackNavigator();
 
@@ -48,9 +48,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreenView} options={{headerShown:false}}/>
+
         <Stack.Screen name="Loyalty Cards">
           {(props) => (
-            <HomeScreenView {...props} cards={cards}/>
+            <HomeScreenView {...props} cards={cards} />
           )}
         </Stack.Screen>
         <Stack.Screen name="Details" component={DetailScreenView} />
