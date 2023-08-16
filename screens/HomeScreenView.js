@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/core'
 import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { TableView } from 'react-native-tableview-simple';
 import Card from '../components/Card.js';
+import AddCard from '../components/AddCard.js';
 
 import { auth, firestore } from '../firebase'
 import { signOut } from 'firebase/auth';
@@ -85,6 +86,11 @@ const HomeScreenView = ({ cards }) => {
           />
         ))}
       </TableView>
+
+      {/* Add Card */}
+      <AddCard/>
+
+      {/* LOGOUT */}
       <View style={styles.container}>
         <Text>Email: {auth.currentUser?.email}</Text>
         {profile && <Text>Name: {profile.name}</Text>}

@@ -18,10 +18,10 @@ const Card = ({ name, cardId, imgUri, redirect, card }) => {
   return (
     <Cell
       onPress={redirect ? handlePress : undefined}
-      contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', height: 290, width: '100%', backgroundColor: 'transparent', highlightColor: '#ccc' }}
+      contentContainerStyle={styles.contentContainer}
       cellContentView={
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Image source={imgUri} style={[styles.image, { height: '80%', aspectRatio: 15 / 9 }]} />
+        <View style={styles.cellContentView}>
+          <Image source={imgUri} style={styles.image} />
           <Text style={styles.cardNameText}>{name}</Text>
           <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
         </View>
@@ -31,13 +31,25 @@ const Card = ({ name, cardId, imgUri, redirect, card }) => {
 };
 
 const styles = {
+  contentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 290,
+    width: '100%',
+    backgroundColor: 'transparent',
+    highlightColor: '#ccc'
+  },
   cellContentView: {
-    backgroundColor: 'transparent'
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   image: {
     width: '100%',
     borderRadius: 5,
     alignSelf: 'center',
+    height: '80%',
+    aspectRatio: 15 / 9,
   },
   cardTitleContainer: {
     position: 'absolute',

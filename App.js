@@ -8,7 +8,7 @@ import HomeScreenView from './screens/HomeScreenView.js';
 import DetailScreenView from './screens/DetailScreenView.js';
 import LoginScreenView from './screens/LoginScreenView.js';
 import RegisterScreenView from './screens/RegisterScreenView.js';
-
+import PlansScreenView from './screens/PlansScreenView.js';
 
 
 const Stack = createStackNavigator();
@@ -57,6 +57,7 @@ export default function App() {
           )}
         </Stack.Screen>
         <Stack.Screen name="Details" component={DetailScreenView} />
+        <Stack.Screen name="Plans" component={PlansScreenView} />
       </Stack.Navigator>
     </NavigationContainer>
   );
