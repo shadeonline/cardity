@@ -7,7 +7,7 @@ const ProgressView = ({card}) => {
 
     return (
         <View style={styles.tabContainer}>
-            <Card name={card.name} cardId={card.cardId} imgUri={card.imgUri} card={card} />
+            <Card cardName={card.cardName} cardId={card.cardId} image={card.image} card={card} />
             <StampCard rows={5} stampsPerRow={6} progress={card.progress} />
         </View>
     );

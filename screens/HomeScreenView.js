@@ -5,18 +5,30 @@ import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-nati
 import { TableView } from 'react-native-tableview-simple';
 import Card from '../components/Card.js';
 import AddCard from '../components/AddCard.js';
-
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { auth, firestore } from '../firebase'
 import { signOut } from 'firebase/auth';
 import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
 
 
 // Render cards according to the cards argument received
-const HomeScreenView = ({ cards }) => {
+const HomeScreenView = () => {
+  const route = useRoute();
 
   const [profile, setProfile] = useState(null);
-
+  const [cards, setCards] = useState([]);
   const navigation = useNavigation()
+
+  const updateCardProgress = (cardId, newProgress) => {
+    setCards(prevCards => {
+      return prevCards.map(card => {
+        if (card.cardId === cardId) {
+          return { ...card, progress: newProgress };
+        }
+        return card;
+      });
+    });
+  };
 
 
   const handleSignOut = () => {
@@ -28,58 +40,78 @@ const HomeScreenView = ({ cards }) => {
       .catch(error => alert(error.message))
   }
 
+  const fetchCardData = async (cards) => {
+    const updatedCards = await Promise.all(
+      cards.map(async (card) => {
+        const loyaltyCardRef = doc(firestore, card.loyaltyCard);
+        const loyaltyCardSnapshot = await getDoc(loyaltyCardRef);
 
-  const getProfile = async (userId) => {
+        if (loyaltyCardSnapshot.exists()) {
+          const loyaltyCardData = loyaltyCardSnapshot.data();
+
+          // Extract the desired fields from loyaltyCardData
+          const { cardName, image } = loyaltyCardData;
+
+          // Return a new object with the desired structure
+          const updatedCard = {
+            cardId: card.cardId,
+            loyaltyCard: card.loyaltyCard,
+            cardName, // Extracted field
+            image, // Extracted field
+            loyaltyProgram: card.loyaltyProgram,
+            progress: card.progress,
+          };
+          return updatedCard;
+        } else {
+          console.log(`Loyalty card with reference ${card.loyaltyCard} does not exist.`);
+          return card;
+        }
+      })
+    );
+    setCards(updatedCards)
+    return updatedCards;
+  };
+
+
+  const fetchProfile = async () => {
     try {
-      const profileRef = doc(firestore, "profiles", userId);
-      const profileSnapshot = await getDoc(profileRef);
+      const user = auth.currentUser;
+      if (user) {
+        const profileRef = doc(firestore, "profiles", user.uid);
+        const profileSnapshot = await getDoc(profileRef);
 
-      if (profileSnapshot.exists()) {
-        return profileSnapshot.data();
-      } else {
-        console.log("Profile does not exist");
-        return null;
+        if (profileSnapshot.exists()) {
+          setProfile(profileSnapshot.data());
+          fetchCardData(profileSnapshot.data().loyaltyCards);
+
+        } else {
+          console.log("Profile does not exist");
+        }
       }
     } catch (error) {
       console.log("Error fetching profile:", error);
-      throw error;
     }
   };
 
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          // Get document from profiles collection
-          const profileRef = doc(firestore, "profiles", user.uid);
-          const profileSnapshot = await getDoc(profileRef);
 
-          if (profileSnapshot.exists()) {
-            setProfile(profileSnapshot.data());
-          }
-          else {
-            console.log("Profile does not exist");
-          }
-        }
-      }
-      catch (error) {
-        console.log("Error fetching profile:", error);
-      }
-    };
+  useEffect(() => {
     fetchProfile();
-  }, []);
+    if (route.params?.refresh) {
+      fetchProfile();
+    }
+  }, [route.params]);
 
 
   return (
     <ScrollView>
+      {/* Show all cards */}
       <TableView>
         {cards.map((card, i) => (
           <Card
-            name={card.name}
+            cardName={card.cardName}
             cardId={card.cardId}
-            imgUri={card.imgUri}
+            image={card.image}
             key={i}
             redirect={'Details'}
             card={card}
@@ -88,7 +120,7 @@ const HomeScreenView = ({ cards }) => {
       </TableView>
 
       {/* Add Card */}
-      <AddCard/>
+      <AddCard />
 
       {/* LOGOUT */}
       <View style={styles.container}>

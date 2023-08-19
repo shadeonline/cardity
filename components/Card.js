@@ -2,9 +2,12 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image } from 'react-native';
 import { Cell } from 'react-native-tableview-simple';
+import { imageMap } from '../imageMap';
 
-const Card = ({ name, cardId, imgUri, redirect, card }) => {
+const Card = ({ cardName, cardId, redirect, card, image }) => {
   const navigation = useNavigation();
+
+  const imageSource = imageMap[image]
   // Check if redirect is blank ornot if redirect is not blank then redirect it to the desired view, else do nth
   const handlePress = () => {
     if (redirect === 'Details') {
@@ -13,6 +16,7 @@ const Card = ({ name, cardId, imgUri, redirect, card }) => {
     else {
       navigation.navigate('Loyalty Cards');
     }
+
   };
 
   return (
@@ -21,8 +25,8 @@ const Card = ({ name, cardId, imgUri, redirect, card }) => {
       contentContainerStyle={styles.contentContainer}
       cellContentView={
         <View style={styles.cellContentView}>
-          <Image source={imgUri} style={styles.image} />
-          <Text style={styles.cardNameText}>{name}</Text>
+          <Image source={imageSource} style={styles.image} />
+          <Text style={styles.cardNameText}>{cardName}</Text>
           <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
         </View>
       }
