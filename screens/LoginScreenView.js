@@ -12,13 +12,13 @@ const LoginScreenView = () => {
 
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
+        const authState = auth.onAuthStateChanged(user => {
             if (user) {
                 navigation.navigate("Login")
                 navigation.replace("Loyalty Cards")
             }
         })
-        return unsubscribe
+        return authState
     }, [])
 
 

@@ -9,7 +9,7 @@ import DetailScreenView from './screens/DetailScreenView.js';
 import LoginScreenView from './screens/LoginScreenView.js';
 import RegisterScreenView from './screens/RegisterScreenView.js';
 import PlansScreenView from './screens/PlansScreenView.js';
-
+import ScannerScreenView from './screens/ScannerScreenView.js';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +28,7 @@ export default function App() {
         </Stack.Screen>
         <Stack.Screen name="Details" component={DetailScreenView} />
         <Stack.Screen name="Plans" component={PlansScreenView} />
+        <Stack.Screen name="Scanner" component={ScannerScreenView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

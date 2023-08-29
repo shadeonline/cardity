@@ -9,10 +9,12 @@ import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { auth, firestore } from '../firebase'
 import { signOut } from 'firebase/auth';
 import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
+import { AntDesign } from '@expo/vector-icons';
 
 
 // Render cards according to the cards argument received
 const HomeScreenView = () => {
+  
   const route = useRoute();
 
   const [profile, setProfile] = useState(null);
@@ -102,6 +104,21 @@ const HomeScreenView = () => {
     }
   }, [route.params]);
 
+  useFocusEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => {
+            // Navigate to your camera screen when the icon is pressed
+            navigation.navigate('Scanner'); // Replace with your actual camera screen
+          }}
+          style={{ marginRight: 20 }}
+        >
+          <AntDesign name="scan1" size={24} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  });
 
   return (
     <ScrollView>
@@ -122,7 +139,7 @@ const HomeScreenView = () => {
       {/* Add Card */}
       <AddCard />
 
-      {/* LOGOUT */}
+      {/* Sign Out */}
       <View style={styles.container}>
         <Text>Email: {auth.currentUser?.email}</Text>
         {profile && <Text>Name: {profile.name}</Text>}

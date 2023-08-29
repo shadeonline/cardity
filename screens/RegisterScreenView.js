@@ -11,12 +11,12 @@ const RegisterScreenView = () => {
     const [password, setPassword] = useState('')
 
 
-    const handleSignUp = () => {
+    const createUser = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 createProfileForUser(user.uid, email, name);
-                console.log('Registered with:', user.email);
+                console.log('Create user:', user.email);
             })
             .catch(error => alert(error.message))
     };
@@ -71,7 +71,7 @@ const RegisterScreenView = () => {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={handleSignUp}
+                    onPress={createUser}
                 >
                     <Text style={styles.buttonText}>Create new account</Text>
                 </TouchableOpacity>

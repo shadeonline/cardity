@@ -1,44 +1,28 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 
-const StampTaskModal = ({ selectedStamp, progress, onCloseModal, stampsPerRow }) => {
-
-  // Logic to decide what text to display on the modal for each stamp
-  const renderModalContent = () => {
-    if (((selectedStamp + 1) % stampsPerRow === 0 && progress < selectedStamp)) {
-      return (
-        <Text style={styles.modalText}>Reward: 1 free drink</Text>
-      );
-    }
-
-    if (progress <= selectedStamp) {
-      return (
-        <Text style={styles.modalText}>
-          Visit the restaurant and eat a meal to fill up this stamp!
-        </Text>
-      );
-    }
-    if (((selectedStamp + 1) % stampsPerRow === 0 && progress > selectedStamp)) {
-      return (
-        <>
-          <Text style={styles.modalText}>Completed!</Text>
-          <Text style={styles.modalText}>Please claim your reward in the rewards tab.</Text>
-        </>
-      );
-    }
-    if (progress > selectedStamp) {
-      return (
-        <Text style={styles.modalText}>Completed!</Text>
-      );
-    }
-  }
-
+const StampTaskModal = ({ selectedStamp, progress, onCloseModal, rewards }) => {
+  const rewardText = rewards ? rewards[selectedStamp] : undefined;
+  const completed = progress >= selectedStamp;
 
   return (
     <Modal visible={selectedStamp !== null} animationType="fade" transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          {renderModalContent()}
+          {rewards === undefined ? (
+            <Text style={styles.modalText}>Loading rewards...</Text>
+          ) : (
+            <>
+              <Text style={styles.modalText}>
+                {completed
+                  ? 'Completed!'
+                  : 'Visit the restaurant and eat a meal to fill up this stamp!'}
+              </Text>
+              {rewardText && (
+                <Text style={styles.modalText}>Reward: {rewardText}</Text>
+              )}
+            </>
+          )}
           <TouchableOpacity style={styles.closeButton} onPress={onCloseModal}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
@@ -47,6 +31,10 @@ const StampTaskModal = ({ selectedStamp, progress, onCloseModal, stampsPerRow })
     </Modal>
   );
 };
+
+
+
+
 
 const styles = StyleSheet.create({
   modalContainer: {
