@@ -4,7 +4,7 @@ import Card from './Card.js';
 import StampCard from './StampCard.js';
 import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { auth, firestore, firebase } from '../firebase';
-import { useFocusEffect,useIsFocused } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
 
 const ProgressView = ({card}) => {
   const [loyaltyProgram, setLoyaltyProgram] = useState([]);
@@ -26,7 +26,6 @@ const ProgressView = ({card}) => {
                   progress: cardDetails.progress
               }));
           }
-          console.log(updatedCard.progress);
       } catch (error) {
           console.log("Error fetching updated progress:", error);
       }

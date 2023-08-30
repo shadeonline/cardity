@@ -18,47 +18,64 @@ export default function ScannerScreenView() {
     };
 
     getBarCodeScannerPermissions();
+
   }, []);
 
   const handleBarCodeScanned = async ({ data }) => {
     setScanned(true);
-
+  
     if (!data.startsWith('cardity:')) {
       alert(`Invalid QR code! Scanned data: ${data}`);
       return;
     }
-
+  
     const jsonData = data.substring(8);
-
+  
     try {
       const cardDetails = JSON.parse(jsonData);
       const userProfileRef = doc(firestore, 'profiles', cardDetails.userUID);
       const userProfileDoc = await getDoc(userProfileRef);
-
+  
       if (!userProfileDoc.exists()) {
         alert(`User profile not found for the scanned card.`);
         return;
       }
-
+  
       const userProfile = userProfileDoc.data();
       const card = userProfile.loyaltyCards.find(card => card.cardId === cardDetails.cardId);
-
+  
       if (!card) {
         alert(`Loyalty card not found in user's profile.`);
         return;
       }
-
-      card.progress += 1;
+      
+      card.progress += 0;
+      
+      const loyaltyProgramReference = cardDetails.loyaltyProgram;
+      const loyaltyProgramRef = doc(firestore, loyaltyProgramReference);
+      const loyaltyProgramDoc = await getDoc(loyaltyProgramRef);
+      const loyaltyProgramData = loyaltyProgramDoc.data();
+      
+      if (loyaltyProgramData.rewards[card.progress] !== undefined) {
+        const qualifiedReward = {
+          reward: loyaltyProgramData.rewards[card.progress],
+          loyaltyCard: card.loyaltyCard,
+          loyaltyProgram: card.loyaltyProgram,
+        };
+  
+        userProfile.rewards = [...userProfile.rewards, qualifiedReward];
+      }
+  
       await setDoc(userProfileRef, userProfile);
       alert(`You have collected a stamp!`);
-      navigation.navigate('Loyalty Cards', { refresh: true });
-
+  
+      navigation.navigate('Loyalty Cards');
+  
     } catch (error) {
-      alert(`Invalid JSON format in QR code data!`);
+      alert({error});
     }
   };
-
-
+  
   return (
     <View style={styles.container}>
       <BarCodeScanner

@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { auth, firestore, firebase } from '../firebase';
+import { useIsFocused } from '@react-navigation/native'
 
 const RewardView = ({ card }) => {
+
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (isFocused) {
+      console.log("Reward");
+    }
+  }, [isFocused]);
+
+
   const rewards = [
     {
       id: 1,
