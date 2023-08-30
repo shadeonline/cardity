@@ -5,16 +5,15 @@ import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-nati
 import { TableView } from 'react-native-tableview-simple';
 import Card from '../components/Card.js';
 import AddCard from '../components/AddCard.js';
-import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { auth, firestore } from '../firebase'
 import { signOut } from 'firebase/auth';
 import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
-
+import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native'
 
 // Render cards according to the cards argument received
 const HomeScreenView = () => {
-  
+  const isFocused = useIsFocused()
   const route = useRoute();
 
   const [profile, setProfile] = useState(null);
@@ -42,67 +41,68 @@ const HomeScreenView = () => {
       .catch(error => alert(error.message))
   }
 
-  const fetchCardData = async (cards) => {
-    const updatedCards = await Promise.all(
-      cards.map(async (card) => {
-        const loyaltyCardRef = doc(firestore, card.loyaltyCard);
-        const loyaltyCardSnapshot = await getDoc(loyaltyCardRef);
+  const fetchCardData = (cards) => {
+    const fetchPromises = cards.map((card) => {
+      const loyaltyCardRef = doc(firestore, card.loyaltyCard);
+      return getDoc(loyaltyCardRef)
+        .then((loyaltyCardSnapshot) => {
+          if (loyaltyCardSnapshot.exists()) {
+            const loyaltyCardData = loyaltyCardSnapshot.data();
 
-        if (loyaltyCardSnapshot.exists()) {
-          const loyaltyCardData = loyaltyCardSnapshot.data();
+            const { cardName, image } = loyaltyCardData;
 
-          // Extract the desired fields from loyaltyCardData
-          const { cardName, image } = loyaltyCardData;
+            const updatedCard = {
+              cardId: card.cardId,
+              loyaltyCard: card.loyaltyCard,
+              cardName,
+              image,
+              loyaltyProgram: card.loyaltyProgram,
+              progress: card.progress,
+            };
+            return updatedCard;
+          } else {
+            console.log(`Loyalty card with reference ${card.loyaltyCard} does not exist.`);
+            return card;
+          }
+        });
+    });
 
-          // Return a new object with the desired structure
-          const updatedCard = {
-            cardId: card.cardId,
-            loyaltyCard: card.loyaltyCard,
-            cardName, // Extracted field
-            image, // Extracted field
-            loyaltyProgram: card.loyaltyProgram,
-            progress: card.progress,
-          };
-          return updatedCard;
-        } else {
-          console.log(`Loyalty card with reference ${card.loyaltyCard} does not exist.`);
-          return card;
-        }
+    return Promise.all(fetchPromises)
+      .then((updatedCards) => {
+        setCards(updatedCards);
+        return updatedCards;
       })
-    );
-    setCards(updatedCards)
-    return updatedCards;
+      .catch((error) => {
+        console.log("Error fetching card data:", error);
+      });
   };
-
-
-  const fetchProfile = async () => {
-    try {
-      const user = auth.currentUser;
-      if (user) {
-        const profileRef = doc(firestore, "profiles", user.uid);
-        const profileSnapshot = await getDoc(profileRef);
-
-        if (profileSnapshot.exists()) {
-          setProfile(profileSnapshot.data());
-          fetchCardData(profileSnapshot.data().loyaltyCards);
-
-        } else {
-          console.log("Profile does not exist");
-        }
-      }
-    } catch (error) {
-      console.log("Error fetching profile:", error);
+  const fetchProfile = () => {
+    const user = auth.currentUser;
+    if (user) {
+      const profileRef = doc(firestore, "profiles", user.uid);
+      return getDoc(profileRef)
+        .then((profileSnapshot) => {
+          if (profileSnapshot.exists()) {
+            setProfile(profileSnapshot.data());
+            return fetchCardData(profileSnapshot.data().loyaltyCards);
+          } else {
+            console.log("Profile does not exist");
+          }
+        })
+        .catch((error) => {
+          console.log("Error fetching profile:", error);
+        });
     }
   };
+
 
 
 
   useEffect(() => {
-    fetchProfile();
-    if (route.params?.refresh) {
-      fetchCardData();
+    if (isFocused) {
+      fetchProfile();
     }
-  }, [route.params]);
+  }, [isFocused]);
 
   useFocusEffect(() => {
     navigation.setOptions({

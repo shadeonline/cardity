@@ -68,7 +68,7 @@ const PlansScreenView = () => {
             });
   
             console.log("Card added to profile successfully");
-            navigation.navigate('Loyalty Cards', { refresh: true })
+            navigation.navigate('Loyalty Cards')
           }
         }
       } catch (error) {

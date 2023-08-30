@@ -20,46 +20,41 @@ export default function ScannerScreenView() {
     getBarCodeScannerPermissions();
   }, []);
 
-  const handleBarCodeScanned = async ({ type, data }) => {
+  const handleBarCodeScanned = async ({ data }) => {
     setScanned(true);
-    // Check if the first letter of the scanned data is "cardity:"
-    if (data.startsWith('cardity:')) {
-      // Remove the "cardity:" prefix
-      const jsonData = data.substring(8);
-      try {
-        // Convert the remaining string to JSON
-        const cardDetails = JSON.parse(jsonData);
-        // Search for user profile using the userUID as document ID
-        if (cardDetails.userUID) {
-          const userProfileRef = doc(firestore, 'profiles', cardDetails.userUID);
-          const userProfileDoc = await getDoc(userProfileRef);
-          if (userProfileDoc.exists()) {
-            const userProfile = userProfileDoc.data();
-            const card = userProfile.loyaltyCards.find(loyaltyCards => loyaltyCards.cardId === cardDetails.cardId);
-            if (card) {
-              // Update loyaltyCard progress
-              userProfile.loyaltyCards.find(loyaltyCards => loyaltyCards.cardId === cardDetails.cardId).progress += 1;
-              // Update the user's profile
-              await setDoc(userProfileRef, userProfile);
-              // Show success alert
-              alert(`You have collected a stamp!`);
-              // Redirect back to Loyalty Cards page with refresh flag
-              navigation.navigate('Loyalty Cards', { refresh: true });
-            } else {
-              alert(`Loyalty card not found in user's profile.`);
-            }
 
-          } else {
-            alert(`User profile not found for the scanned card.`);
-          }
-        } else {
-          alert(`UserUID not found in scanned card details.`);
-        }
-      } catch (error) {
-        alert(`Invalid JSON format in QR code data!`);
-      }
-    } else {
+    if (!data.startsWith('cardity:')) {
       alert(`Invalid QR code! Scanned data: ${data}`);
+      return;
+    }
+
+    const jsonData = data.substring(8);
+
+    try {
+      const cardDetails = JSON.parse(jsonData);
+      const userProfileRef = doc(firestore, 'profiles', cardDetails.userUID);
+      const userProfileDoc = await getDoc(userProfileRef);
+
+      if (!userProfileDoc.exists()) {
+        alert(`User profile not found for the scanned card.`);
+        return;
+      }
+
+      const userProfile = userProfileDoc.data();
+      const card = userProfile.loyaltyCards.find(card => card.cardId === cardDetails.cardId);
+
+      if (!card) {
+        alert(`Loyalty card not found in user's profile.`);
+        return;
+      }
+
+      card.progress += 1;
+      await setDoc(userProfileRef, userProfile);
+      alert(`You have collected a stamp!`);
+      navigation.navigate('Loyalty Cards', { refresh: true });
+
+    } catch (error) {
+      alert(`Invalid JSON format in QR code data!`);
     }
   };
 
