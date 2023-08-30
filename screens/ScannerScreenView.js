@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { firestore } from '../firebase'
+import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
+import { useNavigation } from '@react-navigation/core'
 
 export default function ScannerScreenView() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+
+  const navigation = useNavigation()
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -15,17 +20,49 @@ export default function ScannerScreenView() {
     getBarCodeScannerPermissions();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    // Check if the first letter of the scanned data is "cardity:"
+    if (data.startsWith('cardity:')) {
+      // Remove the "cardity:" prefix
+      const jsonData = data.substring(8);
+      try {
+        // Convert the remaining string to JSON
+        const cardDetails = JSON.parse(jsonData);
+        // Search for user profile using the userUID as document ID
+        if (cardDetails.userUID) {
+          const userProfileRef = doc(firestore, 'profiles', cardDetails.userUID);
+          const userProfileDoc = await getDoc(userProfileRef);
+          if (userProfileDoc.exists()) {
+            const userProfile = userProfileDoc.data();
+            const card = userProfile.loyaltyCards.find(loyaltyCards => loyaltyCards.cardId === cardDetails.cardId);
+            if (card) {
+              // Update loyaltyCard progress
+              userProfile.loyaltyCards.find(loyaltyCards => loyaltyCards.cardId === cardDetails.cardId).progress += 1;
+              // Update the user's profile
+              await setDoc(userProfileRef, userProfile);
+              // Show success alert
+              alert(`You have collected a stamp!`);
+              // Redirect back to Loyalty Cards page with refresh flag
+              navigation.navigate('Loyalty Cards', { refresh: true });
+            } else {
+              alert(`Loyalty card not found in user's profile.`);
+            }
+
+          } else {
+            alert(`User profile not found for the scanned card.`);
+          }
+        } else {
+          alert(`UserUID not found in scanned card details.`);
+        }
+      } catch (error) {
+        alert(`Invalid JSON format in QR code data!`);
+      }
+    } else {
+      alert(`Invalid QR code! Scanned data: ${data}`);
+    }
   };
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
 
   return (
     <View style={styles.container}>

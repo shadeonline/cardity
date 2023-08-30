@@ -1,16 +1,15 @@
 import React from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-
+import { auth } from '../firebase';
 
 const QRView = ({ card }) => {
-    const cardDetails = 'cardity:' + JSON.stringify(card);
+    const userUID = auth.currentUser?.uid;
+    const cardDetails = 'cardity:'+JSON.stringify({ ...card, userUID });
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>QR Code for {card.cardName}</Text>
-            <Text>{cardDetails}</Text>
-
+            <Text>{card.cardName}</Text>
             <QRCode
                 value={cardDetails}
                 size={200}
@@ -22,4 +21,3 @@ const QRView = ({ card }) => {
 };
 
 export default QRView;
-

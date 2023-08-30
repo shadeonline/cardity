@@ -100,7 +100,7 @@ const HomeScreenView = () => {
   useEffect(() => {
     fetchProfile();
     if (route.params?.refresh) {
-      fetchProfile();
+      fetchCardData();
     }
   }, [route.params]);
 

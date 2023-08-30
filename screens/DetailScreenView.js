@@ -1,10 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View, Image } from 'react-native';
-
 import ProgressView from '../components/ProgressView.js';
 import RewardView from '../components/RewardView.js';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'; // Import the icons
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import QRView from '../components/QRView.js';
 
@@ -13,6 +11,8 @@ const Tab = createBottomTabNavigator();
 
 const DetailScreenView = ({ route }) => {
     const { card } = route.params;
+
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -44,9 +44,9 @@ const DetailScreenView = ({ route }) => {
 
                     return icon;
                 },
-                tabBarActiveTintColor: 'blue',
+                tabBarActiveTintColor: 'purple',
                 tabBarInactiveTintColor: 'gray',
-                tabBarStyle: { display: 'flex' }, // Removed unnecessary array
+                tabBarStyle: { display: 'flex' },
                 headerShown: false,
             })}
         >
@@ -63,17 +63,5 @@ const DetailScreenView = ({ route }) => {
     );
 };
 
-const styles = {
-    tabContainer: {
-        flex: 1,
-        backgroundColor: 'white',
-        
-    },
-    heading: {
-        fontSize: 24,
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-};
 
 export default DetailScreenView;
