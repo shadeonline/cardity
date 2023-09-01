@@ -1,97 +1,110 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Text, View, Image } from 'react-native';
-import { Cell } from 'react-native-tableview-simple';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { imageMap } from '../imageMap';
+import { Cell } from 'react-native-tableview-simple';
 
-const Card = ({ cardName, cardId, redirect, card, image }) => {
+const Card = ({ cardName, cardId, redirect, card, image, color }) => {
   const navigation = useNavigation();
 
-  const imageSource = imageMap[image]
-  // Check if redirect is blank ornot if redirect is not blank then redirect it to the desired view, else do nth
+  // Check if image is undefined and use color as background
+  const imageSource = image ? imageMap[image] : null;
+  const cardColor = image ? 'transparent' : color;
+
+  // Check if redirect is blank or not. If redirect is not blank, then navigate to the desired view, else do nothing
   const handlePress = () => {
     if (redirect === 'Details') {
       navigation.navigate('Details', { card });
     }
-    else {
-      navigation.navigate('Loyalty Cards');
-    }
-
   };
 
-  return (
+
+  const cardContent = redirect ? (
     <Cell
-      onPress={redirect ? handlePress : undefined}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={styles.containerStyle}
       cellContentView={
-        <View style={styles.cellContentView}>
-          <Image source={imageSource} style={styles.image} />
-          <Text style={styles.cardNameText}>{cardName}</Text>
-          <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
+        <TouchableOpacity onPress={handlePress} style={[styles.cardContainer, { backgroundColor: cardColor }]}>
+
+          <View style={styles.cardContent}>
+            <Image source={imageSource} style={styles.image} resizeMode="cover" />
+            <Text style={styles.cardNameText}>{cardName}</Text>
+            <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
+          </View>
+        </TouchableOpacity>
+      }
+    />
+  ) : (
+    <Cell
+      contentContainerStyle={styles.containerStyle}
+      cellContentView={
+        <View onPress={handlePress} style={[styles.cardContainer, { backgroundColor: cardColor }]}>
+          <View style={styles.cardContent}>
+            <Image source={imageSource} style={styles.image} resizeMode="cover" />
+            <Text style={styles.cardNameText}>{cardName}</Text>
+            <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
+          </View>
         </View>
       }
     />
   );
+
+
+  return (
+    cardContent
+  );;
 };
 
 const styles = {
-  contentContainer: {
+  containerStyle: {
     alignItems: 'center',
     justifyContent: 'center',
     height: 290,
     width: '100%',
     backgroundColor: 'transparent',
-    highlightColor: '#ccc'
-  },
-  cellContentView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    highlightColor: '#ccc',
+    paddingTop: 25,
+    paddingBottom: 25,
   },
   image: {
-    width: '100%',
-    borderRadius: 5,
-    alignSelf: 'center',
-    height: '80%',
-    aspectRatio: 15 / 9,
+    flex: 1,
+    width: 390,
+    height:240,
+    padding: 0,
+    margin: 0,
+    position: 'absolute',
+    borderRadius: 10,
+    // aspectRatio: 15 / 9,
+    // Remove height to allow it to adjust based on aspect ratio
   },
-  cardTitleContainer: {
+  cardContainer: {
+    borderRadius: 10,
+    padding: 20,
+    width: '100%',
+    // Add any other styling properties you need
+  },
+  cardContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    // Add any other styling properties you need
+  },
+  cardNameText: {
     position: 'absolute',
     top: '8%',
     left: '8%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    alignItems: 'center',
-  },
-  titleText: {
-    color: 'black',
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    backgroundColor: 'white',
+    padding: 5,
   },
   cardIdText: {
     position: 'absolute',
     top: '55%',
     left: '8%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    alignItems: 'center',
+    fontSize: 15,
+    backgroundColor: 'white',
+    padding: 5,
   },
-  cardNameText: {
-    position: 'absolute',
-    top: '10%',
-    left: '8%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    alignItems: 'center',
-    color: 'black',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  }
 };
 
 export default Card;

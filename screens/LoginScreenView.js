@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core'
 import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { collection, doc, setDoc, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
 import { auth, firestore } from '../firebase'
 
 const LoginScreenView = () => {
@@ -10,26 +10,61 @@ const LoginScreenView = () => {
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
 
-
     useEffect(() => {
-        const authState = auth.onAuthStateChanged(user => {
+        const authState = auth.onAuthStateChanged(async user => {
             if (user) {
-                navigation.navigate("Login")
-                navigation.replace("Loyalty Cards")
+                try {
+                    const userProfileRef = doc(firestore, 'profiles', user.uid);
+                    const userProfileDoc = await getDoc(userProfileRef);
+
+                    if (userProfileDoc.exists()) {
+                        const userProfile = userProfileDoc.data();
+
+                        if (userProfile.admin) {
+                            navigation.navigate("Login")
+                            navigation.replace("Admin");
+                        } else {
+                            navigation.navigate("Login")
+                            navigation.replace("Loyalty Cards");
+                        }
+                    } else {
+                        alert("User profile not found.");
+                    }
+                } catch (error) {
+                    console.log("Error fetching user profile:", error);
+                }
             }
-        })
-        return authState
-    }, [])
+        });
 
+        return authState;
+    }, []);
 
-    const handleLogin = () => {
-        signInWithEmailAndPassword(auth, email, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                console.log('Logged in with:', user.email);
-            })
-            .catch(error => alert(error.message))
+    const handleLogin = async () => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+    
+            // Fetch user's profile data
+            const userProfileRef = doc(firestore, 'profiles', user.uid);
+            const userProfileDoc = await getDoc(userProfileRef);
+    
+            if (userProfileDoc.exists()) {
+                const userProfile = userProfileDoc.data();
+                // Check if the user is an admin
+                console.log(userProfile);
+                if (userProfile.admin == true) {
+                    navigation.replace("Admin"); // Navigate to Admin screen
+                } else {
+                    navigation.replace("Loyalty Cards"); // Navigate to Loyalty Cards screen
+                }
+            } else {
+                alert("User profile not found.");
+            }
+        } catch (error) {
+            alert(error.message);
+        }
     }
+    
 
 
     return (

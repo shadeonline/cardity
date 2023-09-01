@@ -1,37 +1,40 @@
-import { useNavigation } from '@react-navigation/core'
-import React, { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { useNavigation } from '@react-navigation/core';
+import React, { useEffect, useState } from 'react';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, doc, setDoc, addDoc, getDocs, query, where } from "firebase/firestore";
-import { auth, firestore } from '../firebase'
+import { auth, firestore } from '../firebase';
+import Checkbox from 'expo-checkbox';
 
 const RegisterScreenView = () => {
-    const [email, setEmail] = useState('')
-    const [name, setName] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [isAdmin, setIsAdmin] = useState(false); // State for admin checkbox
 
 
     const createUser = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
-                createProfileForUser(user.uid, email, name);
+                createProfileForUser(user.uid, email, name, isAdmin); // Pass isAdmin to the function
                 console.log('Create user:', user.email);
             })
-            .catch(error => alert(error.message))
+            .catch(error => alert(error.message));
     };
 
-    const createProfileForUser = async (userUid, email, name) => {
+    const createProfileForUser = async (userUid, email, name, isAdmin) => {
         try {
             const profilesCollection = collection(firestore, "profiles");
             // Generate a new profile document with the user's UID as the document ID
             const profileDocRef = doc(profilesCollection, userUid);
-            // Set data for the profile (name, email)
+            // Set data for the profile (name, email, isAdmin)
             const profileData = {
                 email: email,
                 name: name,
                 loyaltyCards: [],
                 rewards: [],
+                admin: isAdmin,
             };
             // Save the data to the profile document
             await setDoc(profileDocRef, profileData);
@@ -44,7 +47,7 @@ const RegisterScreenView = () => {
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <Image source={require("../assets/Cardity2.png")} style={[styles.image,]} />
-            <View style={styles.inputContainer} >
+            <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
@@ -67,6 +70,11 @@ const RegisterScreenView = () => {
                     secureTextEntry
                     autoCapitalize='none'
                 />
+                {/* Checkbox for admin */}
+                <View style={styles.checkboxContainer}>
+                    <Checkbox style={styles.checkbox} value={isAdmin} onValueChange={setIsAdmin} />
+                    <Text style={styles.checkboxLabel}>Create Admin Account</Text>
+                </View>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -78,10 +86,10 @@ const RegisterScreenView = () => {
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
-    )
+    );
 }
 
-export default RegisterScreenView
+export default RegisterScreenView;
 
 const styles = StyleSheet.create({
     image: {
@@ -90,7 +98,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
     },
@@ -122,4 +129,12 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 16,
     },
-})
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    checkboxLabel: {
+        marginLeft: 10,
+    },
+});

@@ -10,6 +10,8 @@ import LoginScreenView from './screens/LoginScreenView.js';
 import RegisterScreenView from './screens/RegisterScreenView.js';
 import PlansScreenView from './screens/PlansScreenView.js';
 import ScannerScreenView from './screens/ScannerScreenView.js';
+import AdminScreenView from './screens/AdminScreenView.js';
+import CreatePlanScreenView from './screens/CreatePlanScreenView.js';
 
 const Stack = createStackNavigator();
 
@@ -19,16 +21,18 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreenView} options={{headerShown:false}}/>
-        <Stack.Screen name="Register" component={RegisterScreenView}/>
+        <Stack.Screen name="Login" component={LoginScreenView} options={{ headerShown: false }} />
+        <Stack.Screen name="Register" component={RegisterScreenView} />
         <Stack.Screen name="Loyalty Cards">
           {(props) => (
-            <HomeScreenView/>
+            <HomeScreenView />
           )}
         </Stack.Screen>
         <Stack.Screen name="Details" component={DetailScreenView} />
         <Stack.Screen name="Plans" component={PlansScreenView} />
         <Stack.Screen name="Scanner" component={ScannerScreenView} />
+        <Stack.Screen name="Admin" component={AdminScreenView} />
+        <Stack.Screen name="Create Plan" component={CreatePlanScreenView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

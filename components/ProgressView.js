@@ -57,7 +57,7 @@ const ProgressView = ({card}) => {
   
     return (
         <View style={styles.tabContainer}>
-            <Card cardName={card.cardName} cardId={card.cardId} image={card.image} card={card} />
+            <Card cardName={card.cardName} cardId={card.cardId} image={card.image} color={card.color} card={card} />
             <StampCard maxRewardStamps={maxRewardStamps} progress={updatedCard.progress} rewards={loyaltyProgram.rewards} />
         </View>
     );
