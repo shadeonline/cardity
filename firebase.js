@@ -2,6 +2,8 @@
 import * as firebase from 'firebase/app';
 import { getAuth} from 'firebase/auth';
 import { getFirestore } from "firebase/firestore";
+import {FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID, FIREBASE_MEASUREMENT_ID} from '@env'
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -9,19 +11,18 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCf2BsSO7intMEZyZQUbf3gdQK_TNOvxHE",
-  authDomain: "carditydb.firebaseapp.com",
-  projectId: "carditydb",
-  storageBucket: "carditydb.appspot.com",
-  messagingSenderId: "627053711755",
-  appId: "1:627053711755:web:caa91da4f88ef749419f8e",
-  measurementId: "G-44WRTNPMRV"
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+  appId: FIREBASE_APP_ID,
+  measurementId: FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app)
-// const messaging = getMessaging(app);
 
 export {auth, firestore, firebase};
