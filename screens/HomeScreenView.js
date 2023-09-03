@@ -2,23 +2,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/core'
 import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import { TableView } from 'react-native-tableview-simple';
 import Card from '../components/Card.js';
 import AddCard from '../components/AddCard.js';
 import { auth, firestore } from '../firebase'
 import { signOut } from 'firebase/auth';
-import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
-import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+
 
 // Render cards according to the cards argument received
 const HomeScreenView = () => {
   const isFocused = useIsFocused()
-  const route = useRoute();
+  const navigation = useNavigation()
 
   const [profile, setProfile] = useState(null);
   const [cards, setCards] = useState([]);
-  const navigation = useNavigation()
+
 
 
   const handleSignOut = () => {
@@ -109,23 +109,23 @@ const HomeScreenView = () => {
   });
 
   return (
-    <ScrollView>
+    <ScrollView >
       {/* Show all cards */}
-
-      {cards.map((card, i) => (
-        <Card
-          cardName={card.cardName}
-          cardId={card.cardId}
-          image={card.image}
-          color={card.color}
-          key={i}
-          redirect={'Details'}
-          card={card}
-        />
-      ))}
-      {/* Add Card */}
-      <AddCard />
-
+      <View style={styles.cards}>
+        {cards.map((card, i) => (
+          <Card
+            cardName={card.cardName}
+            cardId={card.cardId}
+            image={card.image}
+            color={card.color}
+            key={i}
+            redirect={'Details'}
+            card={card}
+          />
+        ))}
+        {/* Add Card */}
+        <AddCard />
+      </View>
       {/* Sign Out */}
       <View style={styles.container}>
         <Text>Email: {auth.currentUser?.email}</Text>
@@ -152,8 +152,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: '10%',
   },
+  cards: {
+
+  },
   button: {
-    backgroundColor: '#0782F9',
+    backgroundColor: '#792cff',
     width: '60%',
     padding: 15,
     borderRadius: 10,

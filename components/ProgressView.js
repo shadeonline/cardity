@@ -6,6 +6,7 @@ import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from 'firebas
 import { auth, firestore, firebase } from '../firebase';
 import { useIsFocused } from '@react-navigation/native'
 
+
 const ProgressView = ({card}) => {
   const [loyaltyProgram, setLoyaltyProgram] = useState([]);
   const [maxRewardStamps, setMaxRewardStamps] = useState(null);

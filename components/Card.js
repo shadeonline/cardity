@@ -18,15 +18,18 @@ const Card = ({ cardName, cardId, redirect, card, image, color }) => {
     }
   };
 
+  // Conditionally render the image based on whether the image property is defined
+  const imageContent = image ? (
+    <Image source={imageSource} style={styles.image} resizeMode="cover" />
+  ) : null;
 
   const cardContent = redirect ? (
     <Cell
       contentContainerStyle={styles.containerStyle}
       cellContentView={
         <TouchableOpacity onPress={handlePress} style={[styles.cardContainer, { backgroundColor: cardColor }]}>
-
           <View style={styles.cardContent}>
-            <Image source={imageSource} style={styles.image} resizeMode="cover" />
+            {imageContent}
             <Text style={styles.cardNameText}>{cardName}</Text>
             <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
           </View>
@@ -39,7 +42,7 @@ const Card = ({ cardName, cardId, redirect, card, image, color }) => {
       cellContentView={
         <View onPress={handlePress} style={[styles.cardContainer, { backgroundColor: cardColor }]}>
           <View style={styles.cardContent}>
-            <Image source={imageSource} style={styles.image} resizeMode="cover" />
+            {imageContent}
             <Text style={styles.cardNameText}>{cardName}</Text>
             <Text style={styles.cardIdText}>Card No.: {cardId}</Text>
           </View>
@@ -48,10 +51,7 @@ const Card = ({ cardName, cardId, redirect, card, image, color }) => {
     />
   );
 
-
-  return (
-    cardContent
-  );;
+  return cardContent;
 };
 
 const styles = {
@@ -68,39 +68,34 @@ const styles = {
   image: {
     flex: 1,
     width: 390,
-    height:240,
+    height: 240,
     padding: 0,
     margin: 0,
     position: 'absolute',
     borderRadius: 10,
-    // aspectRatio: 15 / 9,
-    // Remove height to allow it to adjust based on aspect ratio
   },
   cardContainer: {
     borderRadius: 10,
     padding: 20,
     width: '100%',
-    // Add any other styling properties you need
   },
   cardContent: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-
-    // Add any other styling properties you need
   },
   cardNameText: {
     position: 'absolute',
-    top: '8%',
-    left: '8%',
+    top: '20%',
+    left: '5%',
     fontSize: 24,
     backgroundColor: 'white',
     padding: 5,
   },
   cardIdText: {
     position: 'absolute',
-    top: '55%',
-    left: '8%',
+    top: '75%',
+    left: '5%',
     fontSize: 15,
     backgroundColor: 'white',
     padding: 5,

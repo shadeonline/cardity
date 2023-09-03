@@ -1,17 +1,27 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ScrollView, TouchableOpacity, StyleSheet, Text, View, Alert } from 'react-native';
 import ProgressView from '../components/ProgressView.js';
 import RewardView from '../components/RewardView.js';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import QRView from '../components/QRView.js';
-
+import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/core'
+import DeleteCardButton from '../components/DeleteCardButton.js';
 
 const Tab = createBottomTabNavigator();
 
 const DetailScreenView = ({ route }) => {
     const { card } = route.params;
-
+    const navigation = useNavigation()
+    useFocusEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <DeleteCardButton card={card}/>
+            ),
+        });
+    });
 
     return (
         <Tab.Navigator
@@ -25,15 +35,15 @@ const DetailScreenView = ({ route }) => {
                         ) : (
                             <FontAwesome5 name="calendar-check" size={size} color={color} />
                         );
-                    } 
+                    }
                     if (route.name === 'QR Code') {
                         icon = focused ? (
                             <Ionicons name="qr-code-outline" size={size} color={color} />
                         ) : (
                             <Ionicons name="qr-code-outline" size={size} color={color} />
                         );
-                    } 
-                    
+                    }
+
                     else if (route.name === 'Rewards') {
                         icon = focused ? (
                             <MaterialIcons name="card-giftcard" size={size} color={color} />

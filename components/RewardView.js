@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Image, TouchableOpacity, Modal } from 'react-native';
+import { Text, View, TouchableOpacity, Modal } from 'react-native';
 import { firestore, auth } from '../firebase';
 import { useIsFocused } from '@react-navigation/native'
-import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import QRCode from 'react-native-qrcode-svg';
 
 
@@ -44,9 +44,9 @@ const RewardView = ({ card }) => {
 
 
   const handleClaimReward = (reward) => {
-    
+
     const userUID = auth.currentUser?.uid;
-    const rewardDetails = 'reward:'+JSON.stringify({ ...reward, userUID });
+    const rewardDetails = 'reward:' + JSON.stringify({ ...reward, userUID });
     setSelectedReward(rewardDetails);
     setIsQRModalVisible(true);
   };
@@ -58,7 +58,13 @@ const RewardView = ({ card }) => {
 
   return (
     <View style={styles.tabContainer}>
+
       <Text style={styles.heading}>Claimable Rewards</Text>
+
+      {userProfile?.rewards && userProfile?.rewards.length === 0 && (
+        <Text style={styles.text}>Looking empty! Start claiming rewards by collecting stamps today!</Text>
+      )}
+
       {userProfile?.rewards.map((reward, index) => (
         <TouchableOpacity
           key={index}
@@ -71,8 +77,6 @@ const RewardView = ({ card }) => {
         </TouchableOpacity>
       ))}
 
-
-
       {/* QR Code Modal */}
       <Modal
         visible={isQRModalVisible}
@@ -81,13 +85,14 @@ const RewardView = ({ card }) => {
         onRequestClose={hideQRModal}
       >
         <View style={styles.qrModalContainer}>
+          <View style={styles.box}> 
           <Text style={styles.qrModalHeading}>QR Code for Reward</Text>
           {/* Generate QR code for selectedReward.rewardId here */}
-          {/* <Text style={styles.qrModalHeading}>{selectedReward}</Text> */}
-          <QRCode value={selectedReward} size={200} />
+          <QRCode value={selectedReward} backgroundColor="white" size={200} />
           <TouchableOpacity style={styles.qrModalCloseButton} onPress={hideQRModal}>
             <Text style={styles.qrModalCloseButtonText}>Close</Text>
           </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </View>
@@ -128,6 +133,14 @@ const styles = {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  box: {
+    // flex: 1,
+    padding: '10%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#dd9eff',
+  },
   qrModalHeading: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -144,6 +157,13 @@ const styles = {
   qrModalCloseButtonText: {
     fontWeight: 'bold',
   },
+  text: {
+    flex: 1,
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 };
 
 export default RewardView;
