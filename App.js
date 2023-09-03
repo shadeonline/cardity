@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { StatusBar } from 'expo-status-bar';
-
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import 'react-native-gesture-handler' 
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreenView from './screens/HomeScreenView.js';

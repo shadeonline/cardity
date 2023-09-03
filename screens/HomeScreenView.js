@@ -11,6 +11,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 
 
+
 // Render cards according to the cards argument received
 const HomeScreenView = () => {
   const isFocused = useIsFocused()
