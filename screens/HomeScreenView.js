@@ -128,8 +128,8 @@ const HomeScreenView = () => {
       </View>
       {/* Sign Out */}
       <View style={styles.container}>
-        <Text>Email: {auth.currentUser?.email}</Text>
-        {profile && <Text>Name: {profile.name}</Text>}
+        <Text style={styles.boxText}>Email: {auth.currentUser?.email}</Text>
+        {profile && <Text style={styles.boxText}>Name: {profile.name}</Text>}
         <TouchableOpacity
           onPress={handleSignOut}
           style={styles.button}
@@ -147,16 +147,18 @@ export default HomeScreenView;
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#dd9eff',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: '10%',
   },
-  cards: {
-
+  boxText: {
+    color: 'white',
+    fontWeight: '500',
   },
   button: {
-    backgroundColor: '#792cff',
+    backgroundColor: '#2541b2',
     width: '60%',
     padding: 15,
     borderRadius: 10,
