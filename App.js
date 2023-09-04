@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler' 
+import '@react-native-async-storage/async-storage'
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,6 +12,7 @@ import PlansScreenView from './screens/PlansScreenView.js';
 import ScannerScreenView from './screens/ScannerScreenView.js';
 import AdminScreenView from './screens/AdminScreenView.js';
 import CreatePlanScreenView from './screens/CreatePlanScreenView.js';
+
 
 const Stack = createStackNavigator();
 
