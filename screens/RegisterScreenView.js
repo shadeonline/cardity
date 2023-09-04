@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
+import * as Notifications from 'expo-notifications';
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
@@ -43,6 +44,7 @@ const RegisterScreenView = () => {
             console.error("Error creating profile:", error);
         }
     };
+    
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">

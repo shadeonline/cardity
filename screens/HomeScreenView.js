@@ -6,9 +6,10 @@ import Card from '../components/Card.js';
 import AddCard from '../components/AddCard.js';
 import { auth, firestore } from '../firebase'
 import { signOut } from 'firebase/auth';
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, query, where } from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import * as Notifications from 'expo-notifications';
 
 
 
@@ -19,6 +20,30 @@ const HomeScreenView = () => {
 
   const [profile, setProfile] = useState(null);
   const [cards, setCards] = useState([]);
+
+  const requestAndStorePushToken = async (userUid) => {
+    try {
+      // Check if the pushToken already exists in the profile
+      if (!profile.pushToken) {
+        // Request push notification permissions
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status === 'granted') {
+          console.log("Permission Granted");
+          const token = (await Notifications.getExpoPushTokenAsync()).data;
+          await setDoc(
+            doc(firestore, "profiles", userUid),
+            { pushToken: token },
+            { merge: true }
+          );
+          console.log("Push Token saved for user:", userUid);
+        } else {
+          console.warn("Push notification permission not granted.");
+        }
+      }
+    } catch (error) {
+      console.error("Error requesting and storing push token:", error);
+    }
+  };
 
 
 
@@ -90,7 +115,13 @@ const HomeScreenView = () => {
   useEffect(() => {
     if (isFocused) {
       fetchProfile();
+      if (profile && !profile.pushToken) {
+        requestAndStorePushToken(auth.currentUser.uid);
+      }
     }
+
+
+
   }, [isFocused]);
 
   useFocusEffect(() => {

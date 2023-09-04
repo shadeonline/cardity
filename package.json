@@ -7,9 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test":"jest",
-    "test:updateSnapshots":"jest -u"
-
+    "test": "jest",
+    "test:updateSnapshots": "jest -u"
   },
   "dependencies": {
     "@expo/webpack-config": "^18.0.1",
@@ -37,13 +36,14 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-tableview-simple": "^4.4.0",
     "react-native-testing-library": "^6.0.0",
-    "react-native-web": "~0.18.10"
+    "react-native-web": "~0.18.10",
+    "expo-notifications": "~0.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },
-  "jest":{
-    "preset":"jest-expo/universal"
+  "jest": {
+    "preset": "jest-expo/universal"
   },
   "private": true
 }
