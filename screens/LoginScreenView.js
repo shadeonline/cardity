@@ -43,28 +43,12 @@ const LoginScreenView = () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-    
-            // Fetch user's profile data
-            const userProfileRef = doc(firestore, 'profiles', user.uid);
-            const userProfileDoc = await getDoc(userProfileRef);
-    
-            if (userProfileDoc.exists()) {
-                const userProfile = userProfileDoc.data();
-                // Check if the user is an admin
-                console.log(userProfile);
-                if (userProfile.admin == true) {
-                    navigation.replace("Admin"); // Navigate to Admin screen
-                } else {
-                    navigation.replace("Loyalty Cards"); // Navigate to Loyalty Cards screen
-                }
-            } else {
-                alert("User profile not found.");
-            }
+            console.log('Logged in with:', user.email);
         } catch (error) {
             alert(error.message);
         }
     }
-    
+
 
 
     return (
