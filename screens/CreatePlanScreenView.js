@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import ColorSelector from "../components/ColorSelector.js";
 import { ScrollView, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { auth, firestore } from '../firebase';
-import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
-
-
-
+import {firebaseCreateLoyaltyPlan} from '../firebaseFunctions'
 
 
 const CreatePlanScreenView = () => {
@@ -24,40 +20,17 @@ const CreatePlanScreenView = () => {
     };
 
     const handleCreatePlan = async () => {
-        try {
-            // Add new loyalty program document
-            const loyaltyProgramRef = collection(firestore, 'loyaltyPrograms');
-            const newLoyaltyProgram = {
-                description: description,
-                loyaltyCard: '', // Leave it empty for now
-                rewards: parseRewardsInput(), // Parse the rewards input and store as a map
-                storeName: storeName,
-            };
-            const programDocRef = await addDoc(loyaltyProgramRef, newLoyaltyProgram);
-
-            // Add new loyalty card document
-            const loyaltyCardRef = collection(firestore, 'loyaltyCards');
-            const newLoyaltyCard = {
-                cardName: cardName,
-                color: color,
-                loyaltyProgram: doc(firestore, `loyaltyPrograms/${programDocRef.id}`), // Create a reference here
-            };
-            const loyaltyCardDocRef = await addDoc(loyaltyCardRef, newLoyaltyCard);
-
-            // Update the loyaltyCard field in newLoyaltyProgram
-            const updatedLoyaltyProgram = {
-                ...newLoyaltyProgram,
-                loyaltyCard: doc(firestore, `loyaltyCards/${loyaltyCardDocRef.id}`), // Create a reference here
-            };
-            await setDoc(programDocRef, updatedLoyaltyProgram);
-
-            // Navigate back to admin screen or wherever you want
-            navigation.goBack();
-            console.log("Plan Created!");
-        } catch (error) {
-            console.error('Error creating plan:', error);
+        const success = await firebaseCreateLoyaltyPlan(description, cardName, storeName, color, parseRewardsInput(rewards));
+        if (success) {
+          // Plan created successfully, navigate to a success screen or handle as needed.
+          console.log("Plan Created!");
+          navigation.goBack()
+        } else {
+          // Error occurred while creating the plan
+          console.log("Plan not Created!");
         }
-    };
+        
+      };
 
     // Function to parse rewards input and convert it into an map
     const parseRewardsInput = () => {

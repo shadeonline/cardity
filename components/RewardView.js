@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, TouchableOpacity, Modal } from 'react-native';
-import { firestore, auth } from '../firebase';
+import { auth } from '../firebase';
 import { useIsFocused } from '@react-navigation/native'
-import { doc, getDoc } from 'firebase/firestore';
 import QRCode from 'react-native-qrcode-svg';
-
+import { firebaseFetchUserProfileReward } from "../firebaseFunctions";
 
 
 const RewardView = ({ card }) => {
@@ -21,27 +20,9 @@ const RewardView = ({ card }) => {
   }, [isFocused]);
 
   const fetchUserProfile = async () => {
-    try {
-      const user = auth.currentUser;
-      if (user) {
-        const profileRef = doc(firestore, "profiles", user.uid);
-        const profileSnapshot = await getDoc(profileRef);
-
-        if (profileSnapshot.exists()) {
-          const profileData = profileSnapshot.data();
-
-          // Filter rewards based on the cardId
-          const filteredRewards = profileData.rewards.filter(
-            reward => reward.cardId == card.cardId
-          );
-          setUserProfile({ ...profileData, rewards: filteredRewards });
-        }
-      }
-    } catch (error) {
-      console.log("Error fetching profile:", error);
-    }
+    const profileData = await firebaseFetchUserProfileReward(card);
+    setUserProfile(profileData);
   };
-
 
   const handleClaimReward = (reward) => {
 
@@ -85,13 +66,13 @@ const RewardView = ({ card }) => {
         onRequestClose={hideQRModal}
       >
         <View style={styles.qrModalContainer}>
-          <View style={styles.box}> 
-          <Text style={styles.qrModalHeading}>QR Code for Reward</Text>
-          {/* Generate QR code for selectedReward.rewardId here */}
-          <QRCode value={selectedReward} backgroundColor="white" size={200} />
-          <TouchableOpacity style={styles.qrModalCloseButton} onPress={hideQRModal}>
-            <Text style={styles.qrModalCloseButtonText}>Close</Text>
-          </TouchableOpacity>
+          <View style={styles.box}>
+            <Text style={styles.qrModalHeading}>QR Code for Reward</Text>
+            {/* Generate QR code for selectedReward.rewardId here */}
+            <QRCode value={selectedReward} backgroundColor="white" size={200} />
+            <TouchableOpacity style={styles.qrModalCloseButton} onPress={hideQRModal}>
+              <Text style={styles.qrModalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

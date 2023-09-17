@@ -2,14 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/core'
 import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import { TableView } from 'react-native-tableview-simple';
 import CreatePlanButton from '../components/CreatePlanButton.js';
-import { auth, firestore } from '../firebase'
+import { auth } from '../firebase'
 import { signOut } from 'firebase/auth';
-import { collection, doc, setDoc, addDoc, getDoc, query, where } from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native'
-
+import { firebaseFetchProfile } from '../firebaseFunctions';
 
 // Render cards according to the cards argument received
 const AdminScreenView = () => {
@@ -25,27 +23,10 @@ const AdminScreenView = () => {
       })
       .catch(error => alert(error.message))
   }
-
-  const fetchProfile = () => {
-    const user = auth.currentUser;
-    if (user) {
-      const profileRef = doc(firestore, "profiles", user.uid);
-      return getDoc(profileRef)
-        .then((profileSnapshot) => {
-          if (profileSnapshot.exists()) {
-            setProfile(profileSnapshot.data());
-          } else {
-            console.log("Profile does not exist");
-          }
-        })
-        .catch((error) => {
-          console.log("Error fetching profile:", error);
-        });
-    }
+  const fetchProfile = async () => {
+    const profileData = await firebaseFetchProfile();
+    setProfile(profileData);
   };
-
-
-
 
   useEffect(() => {
     if (isFocused) {
@@ -73,9 +54,9 @@ const AdminScreenView = () => {
     <ScrollView>
 
       <View style={styles.container}>
-        <CreatePlanButton text="Create Loyalty Plan"  onPress={() => {
-            navigation.navigate('Create Plan');
-          }} />
+        <CreatePlanButton text="Create Loyalty Plan" onPress={() => {
+          navigation.navigate('Create Plan');
+        }} />
       </View>
 
       {/* Sign Out */}

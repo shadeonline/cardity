@@ -1,9 +1,7 @@
-import { useNavigation } from '@react-navigation/core';
-import * as Notifications from 'expo-notifications';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { collection, doc, setDoc, addDoc, getDocs, query, where } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, doc, setDoc } from "firebase/firestore";
 import { auth, firestore } from '../firebase';
 import Checkbox from 'expo-checkbox';
 

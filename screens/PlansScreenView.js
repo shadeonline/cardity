@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { auth, firestore, firebase } from '../firebase';
+import { auth } from '../firebase';
 import { useNavigation } from '@react-navigation/native';
+import { firebaseFetchLoyaltyPrograms, firebaseAddLoyaltyCardToProfile } from '../firebaseFunctions';
 
 const themeColors = ['#ffc2c7', '#ffb1f2', '#dd9eff', '#c966ff'];
 
@@ -11,67 +11,21 @@ const PlansScreenView = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Function to fetch data from Firestore
-    const fetchLoyaltyPrograms = async () => {
-      try {
-        const loyaltyProgramsCollectionRef = collection(firestore, 'loyaltyPrograms');
-        const loyaltyProgramsSnapshot = await getDocs(loyaltyProgramsCollectionRef);
-
-        const loyaltyProgramsData = [];
-
-        for (const docSnapshot of loyaltyProgramsSnapshot.docs) {
-          const data = docSnapshot.data();
-          const docPath = docSnapshot.ref;
-          data.docPath = docPath;
-          loyaltyProgramsData.push(data);
-        }
-        setLoyaltyPrograms(loyaltyProgramsData);
-      } catch (error) {
-        console.log("Error fetching loyalty programs:", error);
-      }
+    const fetchData = async () => {
+      const programs = await firebaseFetchLoyaltyPrograms();
+      setLoyaltyPrograms(programs);
     };
-
-    fetchLoyaltyPrograms();
+    fetchData();
   }, []);
 
-  const handleAddButtonClick = async (item) => {
-    const user = auth.currentUser;
 
+  const handleAddButtonClick = async (plan) => {
+    const user = auth.currentUser;
     if (user) {
       try {
-        // Fetch the user's profile document
-        const profileRef = doc(firestore, "profiles", user.uid);
-        const profileSnapshot = await getDoc(profileRef);
-
-        if (profileSnapshot.exists()) {
-          const profileData = profileSnapshot.data();
-          const existingCard = profileData.loyaltyCards.find(card =>
-            card.loyaltyCard === item.loyaltyCard.path &&
-            card.loyaltyProgram === item.docPath.path
-          );
-
-          if (existingCard) {
-            console.log("Card already exists in user's profile.");
-            alert("This card is already in your profile.");
-            // Handle the scenario where the card already exists in the user's profile
-          } else {
-            // Card doesn't exist, add it to the user's profile
-            const card = {
-              loyaltyCard: item.loyaltyCard.path,
-              loyaltyProgram: item.docPath.path,
-              cardId: Math.floor(100000000000 + Math.random() * 900000000000),
-              progress: 0
-            };
-
-            // Update the user's profile with the new card information
-            await updateDoc(profileRef, {
-              loyaltyCards: arrayUnion(card)
-            });
-
-            console.log("Card added to profile successfully");
-            navigation.navigate('Loyalty Cards');
-          }
-        }
+        // Call your custom function to add the loyalty card to the user's profile
+        await firebaseAddLoyaltyCardToProfile(user.uid, plan);
+        navigation.navigate('Loyalty Cards');
       } catch (error) {
         console.log("Error adding card to profile:", error);
       }
@@ -79,7 +33,6 @@ const PlansScreenView = () => {
   };
 
   return (
-    <View style={styles.container}>
       <FlatList
         data={loyaltyPrograms}
         keyExtractor={(item, index) => index.toString()}
@@ -98,7 +51,6 @@ const PlansScreenView = () => {
           </View>
         )}
       />
-    </View>
   );
 };
 
@@ -114,7 +66,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loyaltyProgram: {
-    marginBottom: 20,
+    margin: 20,
     padding: 20,
     borderRadius: 10,
   },

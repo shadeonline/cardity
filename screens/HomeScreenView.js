@@ -4,13 +4,12 @@ import { useNavigation } from '@react-navigation/core'
 import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import Card from '../components/Card.js';
 import AddCard from '../components/AddCard.js';
-import { auth, firestore } from '../firebase'
+import { auth } from '../firebase'
 import { signOut } from 'firebase/auth';
-import { collection, doc, setDoc, getDoc, query, where } from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import * as Notifications from 'expo-notifications';
-
+import { firebaseRequestAndStorePushToken, firebaseFetchProfile, firebaseFetchCardData } from "../firebaseFunctions.js";
 
 
 // Render cards according to the cards argument received
@@ -21,32 +20,6 @@ const HomeScreenView = () => {
   const [profile, setProfile] = useState(null);
   const [cards, setCards] = useState([]);
 
-  const requestAndStorePushToken = async (userUid) => {
-    try {
-      // Check if the pushToken already exists in the profile
-      if (!profile.pushToken) {
-        // Request push notification permissions
-        const { status } = await Notifications.requestPermissionsAsync();
-        if (status === 'granted') {
-          console.log("Permission Granted");
-          const token = (await Notifications.getExpoPushTokenAsync()).data;
-          await setDoc(
-            doc(firestore, "profiles", userUid),
-            { pushToken: token },
-            { merge: true }
-          );
-          console.log("Push Token saved for user:", userUid);
-        } else {
-          console.warn("Push notification permission not granted.");
-        }
-      }
-    } catch (error) {
-      console.error("Error requesting and storing push token:", error);
-    }
-  };
-
-
-
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -56,70 +29,20 @@ const HomeScreenView = () => {
       .catch(error => alert(error.message))
   }
 
-  const fetchCardData = (cards) => {
-    const fetchPromises = cards.map((card) => {
-      const loyaltyCardRef = doc(firestore, card.loyaltyCard);
-      return getDoc(loyaltyCardRef)
-        .then((loyaltyCardSnapshot) => {
-          if (loyaltyCardSnapshot.exists()) {
-            const loyaltyCardData = loyaltyCardSnapshot.data();
-            const { cardName, image, color } = loyaltyCardData;
-            const updatedCard = {
-              cardId: card.cardId,
-              loyaltyCard: card.loyaltyCard,
-              cardName,
-              image,
-              color,
-              loyaltyProgram: card.loyaltyProgram,
-              progress: card.progress,
-            };
-            return updatedCard;
-          } else {
-            console.log(`Loyalty card with reference ${card.loyaltyCard} does not exist.`);
-            return card;
-          }
-        });
-    });
-
-    return Promise.all(fetchPromises)
-      .then((updatedCards) => {
-        setCards(updatedCards);
-        return updatedCards;
-      })
-      .catch((error) => {
-        console.log("Error fetching card data:", error);
-      });
-  };
-  const fetchProfile = () => {
-    const user = auth.currentUser;
-    if (user) {
-      const profileRef = doc(firestore, "profiles", user.uid);
-      return getDoc(profileRef)
-        .then((profileSnapshot) => {
-          if (profileSnapshot.exists()) {
-            setProfile(profileSnapshot.data());
-            return fetchCardData(profileSnapshot.data().loyaltyCards);
-          } else {
-            console.log("Profile does not exist");
-          }
-        })
-        .catch((error) => {
-          console.log("Error fetching profile:", error);
-        });
-    }
-  };
-
-
-
-
   useEffect(() => {
     if (isFocused) {
-      fetchProfile();
-      if (profile && !profile.pushToken) {
-        requestAndStorePushToken(auth.currentUser.uid);
-      }
+      firebaseFetchProfile().then((profileData) => {
+        if (profileData && !profileData.pushToken) {
+          firebaseRequestAndStorePushToken(auth.currentUser.uid);
+        }
+        if (profileData) {
+          firebaseFetchCardData(profileData.loyaltyCards).then((updatedCards) => {
+            setCards(updatedCards);
+          });
+        }
+        setProfile(profileData)
+      });
     }
-
 
 
   }, [isFocused]);
