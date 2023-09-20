@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import ColorSelector from "../components/ColorSelector.js";
-import { ScrollView, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import {firebaseCreateLoyaltyPlan} from '../firebaseFunctions'
+import { firebaseCreateLoyaltyPlan } from '../firebaseFunctions'
+import { Ionicons } from '@expo/vector-icons';
 
 
 const CreatePlanScreenView = () => {
@@ -19,18 +20,31 @@ const CreatePlanScreenView = () => {
         setRewards([...rewards, { stamps: '', reward: '' }]);
     };
 
+    const removeRewardField = (index) => {
+        const updatedRewards = [...rewards];
+        updatedRewards.splice(index, 1);
+        setRewards(updatedRewards);
+    };
+
     const handleCreatePlan = async () => {
+        if (!cardName || !storeName || !description || !rewards.some(reward => {
+            const stamps = parseInt(reward.stamps);
+            return Number.isInteger(stamps) && stamps > 0 && reward.reward;
+        })) {
+            Alert.alert('Validation Error', 'Please fill in all required fields correctly.');
+            return;
+        }
         const success = await firebaseCreateLoyaltyPlan(description, cardName, storeName, color, parseRewardsInput(rewards));
         if (success) {
-          // Plan created successfully, navigate to a success screen or handle as needed.
-          console.log("Plan Created!");
-          navigation.goBack()
+            // Plan created successfully, navigate to a success screen or handle as needed.
+            console.log("Plan Created!");
+            navigation.goBack()
         } else {
-          // Error occurred while creating the plan
-          console.log("Plan not Created!");
+            // Error occurred while creating the plan
+            console.log("Plan not Created!");
         }
-        
-      };
+
+    };
 
     // Function to parse rewards input and convert it into an map
     const parseRewardsInput = () => {
@@ -100,6 +114,10 @@ const CreatePlanScreenView = () => {
                                 setRewards(updatedRewards);
                             }}
                         />
+
+                        <TouchableOpacity style={styles.removeRewardButton} onPress={() => removeRewardField(index)}>
+                            <Ionicons name="ios-trash-outline" size={24} color="red" />
+                        </TouchableOpacity>
                     </View>
                 ))}
 
@@ -172,4 +190,10 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 5,
     },
+    removeRewardButton: {
+        alignSelf: 'flex-start', // Adjust this based on your layout requirements
+        padding: 10,
+        borderRadius: 5,
+      },
+      
 });

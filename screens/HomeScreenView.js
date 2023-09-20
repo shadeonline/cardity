@@ -64,7 +64,7 @@ const HomeScreenView = () => {
   });
 
   return (
-    <ScrollView >
+    <ScrollView style={{backgroundColor: '#dd9eff' }}>
       {/* Show all cards */}
       <View style={styles.cards}>
         {cards.map((card, i) => (

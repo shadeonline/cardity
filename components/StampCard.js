@@ -7,7 +7,6 @@ const StampCard = ({ maxRewardStamps, progress, rewards }) => {
 
   const handleStampPress = (stampKey) => {
     setSelectedStamp(stampKey);
-    console.log(stampKey)
   };
   const handleCloseModal = () => {
     setSelectedStamp(null);

@@ -11,6 +11,7 @@ import PlansScreenView from './screens/PlansScreenView.js';
 import ScannerScreenView from './screens/ScannerScreenView.js';
 import AdminScreenView from './screens/AdminScreenView.js';
 import CreatePlanScreenView from './screens/CreatePlanScreenView.js';
+import EditPlanScreenView from './screens/EditPlanScreenView.js'
 
 
 const Stack = createStackNavigator();
@@ -32,6 +33,7 @@ export default function App() {
         <Stack.Screen name="Scanner" component={ScannerScreenView} />
         <Stack.Screen name="Admin" component={AdminScreenView} />
         <Stack.Screen name="Create Plan" component={CreatePlanScreenView} />
+        <Stack.Screen name="Edit Plan" component={EditPlanScreenView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

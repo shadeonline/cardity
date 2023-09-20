@@ -1,36 +1,45 @@
-
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/core'
+import { useNavigation } from '@react-navigation/core';
 import { ScrollView, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import CreatePlanButton from '../components/CreatePlanButton.js';
-import { auth } from '../firebase'
+import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { AntDesign } from '@expo/vector-icons';
-import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { firebaseFetchProfile } from '../firebaseFunctions';
+import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { firebaseFetchProfile, firebaseFetchLoyaltyProgramsByUser } from '../firebaseFunctions';
 
-// Render cards according to the cards argument received
 const AdminScreenView = () => {
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const [profile, setProfile] = useState(null);
-  const navigation = useNavigation()
+  const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
+  const navigation = useNavigation();
 
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("Signed out")
-        navigation.replace("Login")
+        console.log("Signed out");
+        navigation.replace("Login");
       })
-      .catch(error => alert(error.message))
-  }
+      .catch(error => alert(error.message));
+  };
+
   const fetchProfile = async () => {
     const profileData = await firebaseFetchProfile();
     setProfile(profileData);
   };
 
+  const fetchLoyaltyPrograms = async () => {
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      const programs = await firebaseFetchLoyaltyProgramsByUser(uid);
+      setLoyaltyPrograms(programs);
+    }
+  };
+
   useEffect(() => {
     if (isFocused) {
       fetchProfile();
+      fetchLoyaltyPrograms();
     }
   }, [isFocused]);
 
@@ -39,8 +48,7 @@ const AdminScreenView = () => {
       headerRight: () => (
         <TouchableOpacity
           onPress={() => {
-            // Navigate to your camera screen when the icon is pressed
-            navigation.navigate('Scanner'); // Replace with your actual camera screen
+            navigation.navigate('Scanner');
           }}
           style={{ marginRight: 20 }}
         >
@@ -51,53 +59,121 @@ const AdminScreenView = () => {
   });
 
   return (
-    <ScrollView>
-
-      <View style={styles.container}>
-        <CreatePlanButton text="Create Loyalty Plan" onPress={() => {
-          navigation.navigate('Create Plan');
-        }} />
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.heading}>Welcome, {profile?.name || 'Admin'}</Text>
+        <Text style={styles.email}>{auth.currentUser?.email}</Text>
       </View>
 
-      {/* Sign Out */}
-      <View style={styles.container}>
-        <Text>Email: {auth.currentUser?.email}</Text>
-        {profile && <Text>Name: {profile.name}</Text>}
-        <TouchableOpacity
-          onPress={handleSignOut}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Sign out</Text>
-        </TouchableOpacity>
-      </View>
+      <CreatePlanButton text="Create Loyalty Plan" onPress={() => {
+        navigation.navigate('Create Plan');
+      }} />
+
+      <Text style={styles.sectionTitle}>Loyalty Plans Created:</Text>
+
+      {loyaltyPrograms.length > 0 ? (
+        loyaltyPrograms.map((program, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.card}
+            onPress={() => {
+              const { loyaltyCard, description, rewards, storeName, id } = program;
+
+              // Remove non-serializable objects or replace them with serializable data
+              const sanitizedLoyaltyCard = {
+                cardName: loyaltyCard.cardName,
+                color: loyaltyCard.color,
+                id: loyaltyCard.id
+              };
+
+              // Create sanitized programData
+              const programData = {
+                loyaltyCard: sanitizedLoyaltyCard,
+                description,
+                rewards,
+                storeName,
+                id,
+              };
+
+              navigation.navigate('Edit Plan', { programData });
+            }}
+          >
+            <Text style={styles.programName}>{program.loyaltyCard.cardName}</Text>
+            <Text style={styles.programDescription}>{program.description}</Text>
+          </TouchableOpacity>
+        ))
+      ) : (
+        <Text style={styles.noPrograms}>No loyalty programs created yet.</Text>
+      )}
+
+      <TouchableOpacity
+        onPress={handleSignOut}
+        style={styles.signOutButton}
+      >
+        <Text style={styles.buttonText}>Sign out</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
 
-export default AdminScreenView;
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '10%',
+    backgroundColor: '#f0f0f0',
+    padding: 16,
   },
-  button: {
-    backgroundColor: '#0782F9',
-    width: '60%',
-    padding: 15,
+  header: {
+    marginBottom: 16,
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  email: {
+    fontSize: 16,
+    color: '#666',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 3,
+  },
+  programName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  programDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  noPrograms: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  signOutButton: {
+    backgroundColor: '#ff3333',
+    padding: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 40,
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginTop: 16,
   },
   buttonText: {
     color: 'white',
-    fontWeight: '700',
+    fontWeight: 'bold',
     fontSize: 16,
   },
-})
+});
+
+export default AdminScreenView;

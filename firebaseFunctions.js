@@ -1,5 +1,5 @@
 import { auth, firestore, firebase } from './firebase';
-import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion, addDoc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion, addDoc, setDoc, query, where } from 'firebase/firestore';
 
 // Function to delete a loyalty card from the user's profile
 const firebaseDeleteCard = async (card) => {
@@ -69,6 +69,54 @@ const firebaseFetchLoyaltyProgram = async (card) => {
     return null;
 };
 
+
+// Function to fetch loyalty programs and associated data created by a user
+const firebaseFetchLoyaltyProgramsByUser = async (uid) => {
+    const loyaltyProgramsCollectionRef = collection(firestore, 'loyaltyPrograms');
+  
+    // Create a query to fetch loyalty programs where createdBy matches the user's UID
+    const loyaltyProgramsQuery = query(
+        loyaltyProgramsCollectionRef,
+        where('createdBy', '==', uid)
+    );
+  
+    try {
+        const loyaltyProgramsQuerySnapshot = await getDocs(loyaltyProgramsQuery);
+        const loyaltyPrograms = [];
+  
+        for (const doc of loyaltyProgramsQuerySnapshot.docs) {
+            if (doc.exists()) {
+                const loyaltyProgramData = doc.data();
+  
+                // Retrieve the associated loyalty card data
+                const loyaltyCardRef = loyaltyProgramData.loyaltyCard;
+                const loyaltyCardSnapshot = await getDoc(loyaltyCardRef);
+                const loyaltyCardData = loyaltyCardSnapshot.data();
+                const rewards = loyaltyProgramData.rewards;
+  
+                // Include the document IDs
+                const loyaltyProgramId = doc.id;
+                const loyaltyCardId = loyaltyCardSnapshot.id;
+  
+                loyaltyPrograms.push({
+                    ...loyaltyProgramData,
+                    loyaltyCard: { ...loyaltyCardData, id: loyaltyCardId },
+                    rewards: rewards,
+                    id: loyaltyProgramId,
+                });
+            }
+        }
+  
+        return loyaltyPrograms;
+    } catch (error) {
+        console.log('Error fetching loyalty programs:', error);
+    }
+  
+    return [];
+};
+
+
+
 // Function to fetch user profile along with filtered rewards
 const firebaseFetchUserProfileReward = async (card) => {
     // Fetch the user's profile and filter rewards based on the cardId.
@@ -126,8 +174,9 @@ const firebaseCreateLoyaltyPlan = async (description, cardName, storeName, color
         const newLoyaltyProgram = {
             description: description,
             loyaltyCard: '', // Leave it empty for now
-            rewards: rewards, // Parse the rewards input and store as a map
+            rewards: rewards,
             storeName: storeName,
+            createdBy: auth.currentUser.uid
         };
         const programDocRef = await addDoc(loyaltyProgramRef, newLoyaltyProgram);
 
@@ -154,6 +203,42 @@ const firebaseCreateLoyaltyPlan = async (description, cardName, storeName, color
     }
 };
 
+const firebaseEditLoyaltyPlan = async (planId, updatedDescription, updatedCardName, updatedStoreName, updatedColor, updatedRewards) => {
+    try {
+        // Update existing loyalty program document
+        const programDocRef = doc(firestore, 'loyaltyPrograms', planId);
+        const updatedProgramData = {
+            description: updatedDescription,
+            storeName: updatedStoreName,
+            rewards: updatedRewards,
+        };
+        await updateDoc(programDocRef, updatedProgramData);
+
+        // Get the associated loyalty card ID from the program
+        const programSnapshot = await getDoc(programDocRef);
+        const { loyaltyCard } = programSnapshot.data();
+
+        // Update the associated loyalty card document
+        const cardDocRef = doc(firestore, 'loyaltyCards', loyaltyCard.id);
+        const updatedCardData = {
+            cardName: updatedCardName,
+            color: updatedColor,
+        };
+        await updateDoc(cardDocRef, updatedCardData);
+
+        // Update the loyaltyCard field in the loyalty program document
+        const updatedLoyaltyProgramData = {
+            ...updatedProgramData,
+            loyaltyCard: cardDocRef,
+        };
+        await updateDoc(programDocRef, updatedLoyaltyProgramData);
+
+        return true; // Success
+    } catch (error) {
+        console.error('Error editing plan:', error);
+        return false; // Error occurred
+    }
+};
 
 
 // Function to fetch card data for an array of cards
@@ -372,5 +457,7 @@ export {
     firebaseFetchLoyaltyPrograms,
     firebaseAddLoyaltyCardToProfile,
     firebaseCollectStamp,
-    firebaseCollectReward
+    firebaseCollectReward,
+    firebaseFetchLoyaltyProgramsByUser,
+    firebaseEditLoyaltyPlan
 }

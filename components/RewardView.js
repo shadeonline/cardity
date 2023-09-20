@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity, Modal } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, Image, ScrollView } from 'react-native';
 import { auth } from '../firebase';
 import { useIsFocused } from '@react-navigation/native'
+import { Feather } from '@expo/vector-icons';
 import QRCode from 'react-native-qrcode-svg';
 import { firebaseFetchUserProfileReward } from "../firebaseFunctions";
-
 
 const RewardView = ({ card }) => {
   const isFocused = useIsFocused();
@@ -25,9 +25,9 @@ const RewardView = ({ card }) => {
   };
 
   const handleClaimReward = (reward) => {
-
     const userUID = auth.currentUser?.uid;
     const rewardDetails = 'reward:' + JSON.stringify({ ...reward, userUID });
+    console.log(rewardDetails);
     setSelectedReward(rewardDetails);
     setIsQRModalVisible(true);
   };
@@ -38,26 +38,26 @@ const RewardView = ({ card }) => {
   };
 
   return (
-    <View style={styles.tabContainer}>
-
+    <View style={styles.container}>
       <Text style={styles.heading}>Claimable Rewards</Text>
 
       {userProfile?.rewards && userProfile?.rewards.length === 0 && (
-        <Text style={styles.text}>Looking empty! Start claiming rewards by collecting stamps today!</Text>
+        <Text style={styles.emptyText}>Start claiming rewards by collecting stamps today!</Text>
       )}
-
+      <ScrollView>
       {userProfile?.rewards.map((reward, index) => (
         <TouchableOpacity
           key={index}
-          style={styles.rewardContainer}
+          style={styles.rewardCard}
           onPress={() => handleClaimReward(reward)}
         >
           <View style={styles.rewardContent}>
+          <Feather name="gift" size={24} color="black" style={styles.rewardIcon} />
             <Text style={styles.rewardTitle}>{reward.reward}</Text>
           </View>
         </TouchableOpacity>
       ))}
-
+      </ScrollView>
       {/* QR Code Modal */}
       <Modal
         visible={isQRModalVisible}
@@ -66,9 +66,8 @@ const RewardView = ({ card }) => {
         onRequestClose={hideQRModal}
       >
         <View style={styles.qrModalContainer}>
-          <View style={styles.box}>
+          <View style={styles.qrModalBox}>
             <Text style={styles.qrModalHeading}>QR Code for Reward</Text>
-            {/* Generate QR code for selectedReward.rewardId here */}
             <QRCode value={selectedReward} backgroundColor="white" size={200} />
             <TouchableOpacity style={styles.qrModalCloseButton} onPress={hideQRModal}>
               <Text style={styles.qrModalCloseButtonText}>Close</Text>
@@ -81,32 +80,49 @@ const RewardView = ({ card }) => {
 };
 
 const styles = {
-  tabContainer: {
+  container: {
     flex: 1,
     backgroundColor: 'white',
     paddingTop: 20,
     paddingHorizontal: 20,
   },
   heading: {
-    fontSize: 24,
-    marginBottom: 10,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
     textAlign: 'center',
   },
-  rewardContainer: {
-    backgroundColor: '#e6e6e6',
-    borderRadius: 8,
-    marginBottom: 10,
+  emptyText: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+  },
+  rewardCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   rewardContent: {
-    padding: 10,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rewardIcon: {
+    width: 32,
+    height: 32,
+    marginRight: 12,
   },
   rewardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-  },
-  rewardDescription: {
-    fontSize: 16,
-    marginTop: 5,
+    color: '#333',
   },
   qrModalContainer: {
     flex: 1,
@@ -114,37 +130,29 @@ const styles = {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  box: {
-    // flex: 1,
-    padding: '10%',
-    borderRadius: 10,
-    justifyContent: 'center',
+  qrModalBox: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#fff',
     alignItems: 'center',
-    backgroundColor: '#dd9eff',
   },
   qrModalHeading: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 16,
   },
   qrModalCloseButton: {
     marginTop: 20,
-    backgroundColor: '#e6e6e6',
+    backgroundColor: '#dd9eff',
     borderRadius: 8,
-    padding: 10,
-    width: 100,
+    padding: 12,
+    width: 120,
     alignItems: 'center',
   },
   qrModalCloseButtonText: {
     fontWeight: 'bold',
+    color: 'white',
   },
-  text: {
-    flex: 1,
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
 };
 
 export default RewardView;
