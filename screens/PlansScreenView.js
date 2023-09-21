@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { useNavigation } from '@react-navigation/native';
 import { firebaseFetchLoyaltyPrograms, firebaseAddLoyaltyCardToProfile } from '../firebaseFunctions';
 
-const themeColors = ['#ffc2c7', '#ffb1f2', '#dd9eff', '#c966ff'];
+const themeColors = [ '#c966ff'];
 
 const PlansScreenView = () => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);

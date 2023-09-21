@@ -54,30 +54,31 @@ const Card = ({ cardName, cardId, redirect, card, image, color }) => {
   return cardContent;
 };
 
+
 const styles = {
   containerStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 290,
+    height: 250,
     width: '100%',
     backgroundColor: 'transparent',
     highlightColor: '#ccc',
-    paddingTop: 25,
-    paddingBottom: 25,
+    padding: 20,
+    marginVertical: 40,
   },
   image: {
-    flex: 1,
-    width: 390,
-    height: 240,
+    width: '100%', // Use '100%' to ensure the image takes the full width
+    // aspectRatio: 16 / 9, // Set the aspect ratio to maintain the image's original aspect ratio (e.g., 16:9)
+    height:'100%',
     padding: 0,
     margin: 0,
     position: 'absolute',
-    borderRadius: 10,
   },
   cardContainer: {
     borderRadius: 10,
-    padding: 20,
     width: '100%',
+    height: 260, // Set a fixed height here to match the container size
+    overflow: 'hidden', // Hide any content that overflows the card
   },
   cardContent: {
     flex: 1,
@@ -101,5 +102,6 @@ const styles = {
     padding: 5,
   },
 };
+
 
 export default Card;

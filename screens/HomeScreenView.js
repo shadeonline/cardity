@@ -47,24 +47,24 @@ const HomeScreenView = () => {
 
   }, [isFocused]);
 
-  useFocusEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => {
-            // Navigate to your camera screen when the icon is pressed
-            navigation.navigate('Scanner'); // Replace with your actual camera screen
-          }}
-          style={{ marginRight: 20 }}
-        >
-          <AntDesign name="scan1" size={24} color="black" />
-        </TouchableOpacity>
-      ),
-    });
-  });
+  // useFocusEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <TouchableOpacity
+  //         onPress={() => {
+  //           // Navigate to your camera screen when the icon is pressed
+  //           navigation.navigate('Scanner'); // Replace with your actual camera screen
+  //         }}
+  //         style={{ marginRight: 20 }}
+  //       >
+  //         <AntDesign name="scan1" size={24} color="black" />
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // });
 
   return (
-    <ScrollView style={{backgroundColor: '#dd9eff' }}>
+    <ScrollView style={styles.background}>
       {/* Show all cards */}
       <View style={styles.cards}>
         {cards.map((card, i) => (
@@ -101,6 +101,12 @@ export default HomeScreenView;
 
 
 const styles = StyleSheet.create({
+  background: {
+    backgroundColor: 'white',
+  },
+  cards: {
+    paddingVertical: 20
+  },
   container: {
     backgroundColor: '#dd9eff',
     flex: 1,

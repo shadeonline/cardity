@@ -82,13 +82,6 @@ const EditPlanScreenView = ({ route }) => {
         return parsedRewards;
     };
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerTitle: 'Edit Loyalty Plan',
-            headerTitleStyle: { fontSize: 20 },
-            headerTitleAlign: 'center',
-        });
-    }, [navigation]);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">

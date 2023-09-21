@@ -31,20 +31,6 @@ export default function ScannerScreenView() {
         const cardDetails = JSON.parse(jsonData);
         firebaseCollectStamp(cardDetails)
         navigation.goBack();
-        // Check if the user has a pushToken
-        // if (userProfile.pushToken) {
-        //   // Send a push notification
-        //   const notificationContent = {
-        //     title: 'Card Scanned',
-        //     body: `You've collected a stamp on your loyalty card.`,
-        //   };
-
-        //   // Send the push notification
-        //   await Notifications.scheduleNotificationAsync({
-        //     content: notificationContent,
-        //     to: userProfile.pushToken,
-        //   });
-        // }
       }
       catch (error) {
         alert({ error });
@@ -56,21 +42,6 @@ export default function ScannerScreenView() {
         const rewardDetails = JSON.parse(jsonData);
         firebaseCollectReward(rewardDetails)
         navigation.goBack();
-
-        // // Check if the user has a pushToken
-        // if (userProfile.pushToken) {
-        //   // Send a push notification
-        //   const notificationContent = {
-        //     title: 'Reward redeemed',
-        //     body: `Congratulations on redeeming your reward!`,
-        //   };
-
-        //   // Send the push notification
-        //   await Notifications.scheduleNotificationAsync({
-        //     content: notificationContent,
-        //     to: userProfile.pushToken,
-        //   });
-        // }
       }
       catch (error) {
       alert(`Error while processing reward QR code: ${error}`);
