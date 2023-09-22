@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RewardView Component matches snapshot 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "white",
+      "flex": 1,
+      "paddingHorizontal": 20,
+      "paddingTop": 20,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "marginBottom": 20,
+        "textAlign": "center",
+      }
+    }
+  >
+    Claimable Rewards
+  </Text>
+  <RCTScrollView>
+    <View />
+  </RCTScrollView>
+  <Modal
+    animationType="fade"
+    hardwareAccelerated={false}
+    onRequestClose={[Function]}
+    transparent={true}
+    visible={false}
+  />
+</View>
+`;

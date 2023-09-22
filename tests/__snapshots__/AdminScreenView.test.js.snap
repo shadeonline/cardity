@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AdminScreenView Component matches snapshot 1`] = `
+<RCTScrollView
+  style={
+    {
+      "backgroundColor": "#f0f0f0",
+      "flex": 1,
+      "padding": 16,
+    }
+  }
+>
+  <View>
+    <View
+      style={
+        {
+          "marginBottom": 16,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 24,
+            "fontWeight": "bold",
+            "marginBottom": 8,
+          }
+        }
+      >
+        Welcome, 
+        Admin
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#666",
+            "fontSize": 16,
+          }
+        }
+      >
+        admin@example.com
+      </Text>
+    </View>
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "alignItems": "center",
+          "backgroundColor": "#e8e9ed",
+          "borderRadius": 10,
+          "height": 220,
+          "justifyContent": "center",
+          "marginBottom": 20,
+          "opacity": 1,
+          "width": 710,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 25,
+          }
+        }
+      >
+        +
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 25,
+          }
+        }
+      >
+        Create Loyalty Plan
+      </Text>
+    </View>
+    <Text
+      style={
+        {
+          "fontSize": 18,
+          "fontWeight": "bold",
+          "marginBottom": 8,
+          "marginTop": 16,
+        }
+      }
+    >
+      Loyalty Plans Created:
+    </Text>
+    <Text
+      style={
+        {
+          "color": "#888",
+          "fontSize": 16,
+          "marginTop": 16,
+          "textAlign": "center",
+        }
+      }
+    >
+      No loyalty programs created yet.
+    </Text>
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "alignItems": "center",
+          "backgroundColor": "#ff3333",
+          "borderRadius": 10,
+          "marginTop": 16,
+          "opacity": 1,
+          "padding": 16,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "color": "white",
+            "fontSize": 16,
+            "fontWeight": "bold",
+          }
+        }
+      >
+        Sign out
+      </Text>
+    </View>
+  </View>
+</RCTScrollView>
+`;

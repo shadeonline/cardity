@@ -2,7 +2,6 @@ import React from 'react';
 import { TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
 import { firebaseDeleteCard } from "../firebaseFunctions";
 
 const DeleteCardButton = ({ card }) => {

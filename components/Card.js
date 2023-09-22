@@ -6,6 +6,7 @@ import { Cell } from 'react-native-tableview-simple';
 
 const Card = ({ cardName, cardId, redirect, card, image, color }) => {
   const navigation = useNavigation();
+  // console.log(cardName, cardId, redirect, card, image, color);
 
   // Check if image is undefined and use color as background
   const imageSource = image ? imageMap[image] : null;

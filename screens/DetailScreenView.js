@@ -1,14 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { ScrollView, TouchableOpacity, StyleSheet, Text, View, Alert } from 'react-native';
-import ProgressView from '../components/ProgressView.js';
-import RewardView from '../components/RewardView.js';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
-import QRView from '../components/QRView.js';
 import { useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/core'
 import DeleteCardButton from '../components/DeleteCardButton.js';
+import ProgressView from '../components/ProgressView.js';
+import RewardView from '../components/RewardView.js';
+import QRView from '../components/QRView.js';
 
 const Tab = createBottomTabNavigator();
 

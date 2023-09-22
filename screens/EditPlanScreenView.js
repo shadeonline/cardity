@@ -15,16 +15,14 @@ import ColorSelector from "../components/ColorSelector.js";
 
 const EditPlanScreenView = ({ route }) => {
     const navigation = useNavigation();
-
-
-
+    
     const { programData } = route.params;
     const [editedDescription, setEditedDescription] = useState(programData.description);
     const [editedCardName, setEditedCardName] = useState(programData.loyaltyCard.cardName);
     const [editedStoreName, setEditedStoreName] = useState(programData.storeName);
     const [editedColor, setEditedColor] = useState(programData.loyaltyCard.color);
     const [editedTask, setEditedTask] = useState(programData.task);
-
+    console.log(programData);
     const formattedRewards = Object.keys(programData.rewards).map((stamps) => ({
         stamps,
         reward: programData.rewards[stamps],
