@@ -77,7 +77,7 @@ const AdminScreenView = () => {
             key={index}
             style={styles.card}
             onPress={() => {
-              const { loyaltyCard, description, rewards, storeName, id } = program;
+              const { loyaltyCard, description, rewards, storeName, id, task } = program;
 
               // Remove non-serializable objects or replace them with serializable data
               const sanitizedLoyaltyCard = {
@@ -93,6 +93,7 @@ const AdminScreenView = () => {
                 rewards,
                 storeName,
                 id,
+                task,
               };
 
               navigation.navigate('Edit Plan', { programData });

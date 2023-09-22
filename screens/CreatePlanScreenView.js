@@ -12,6 +12,7 @@ const CreatePlanScreenView = () => {
     const [description, setDescription] = useState('');
     const [cardName, setCardName] = useState('');
     const [storeName, setStoreName] = useState('');
+    const [task, setTask] = useState('');
     const [color, setColor] = useState('#ffc2c7');
     const [rewards, setRewards] = useState([{ stamps: '', reward: '' }]); // Initial state with one empty reward
 
@@ -34,7 +35,7 @@ const CreatePlanScreenView = () => {
             Alert.alert('Validation Error', 'Please fill in all required fields correctly.');
             return;
         }
-        const success = await firebaseCreateLoyaltyPlan(description, cardName, storeName, color, parseRewardsInput(rewards));
+        const success = await firebaseCreateLoyaltyPlan(description, cardName, storeName, color, parseRewardsInput(rewards), task);
         if (success) {
             // Plan created successfully, navigate to a success screen or handle as needed.
             console.log("Plan Created!");
@@ -43,7 +44,6 @@ const CreatePlanScreenView = () => {
             // Error occurred while creating the plan
             console.log("Plan not Created!");
         }
-
     };
 
     // Function to parse rewards input and convert it into an map
@@ -85,6 +85,13 @@ const CreatePlanScreenView = () => {
                     placeholder="i.e: Earn great and awesome reward with this plan"
                     value={description}
                     onChangeText={text => setDescription(text)}
+                />
+                <Text style={styles.tag}>Task:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="i.e: Make a purchase of more than $10"
+                    value={task}
+                    onChangeText={text => setTask(text)}
                 />
 
                 <Text style={styles.tag}>Color of loyalty card:</Text>
@@ -194,6 +201,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start', // Adjust this based on your layout requirements
         padding: 10,
         borderRadius: 5,
-      },
-      
+    },
+
 });

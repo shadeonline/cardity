@@ -165,7 +165,7 @@ const firebaseFetchProfile = async () => {
 };
 
 // Function to create a new loyalty plan
-const firebaseCreateLoyaltyPlan = async (description, cardName, storeName, color, rewards) => {
+const firebaseCreateLoyaltyPlan = async (description, cardName, storeName, color, rewards, task) => {
     // Create a new loyalty program and card, and associate them.
     // Returns true on success, false on error.
     try {
@@ -176,7 +176,8 @@ const firebaseCreateLoyaltyPlan = async (description, cardName, storeName, color
             loyaltyCard: '', // Leave it empty for now
             rewards: rewards,
             storeName: storeName,
-            createdBy: auth.currentUser.uid
+            createdBy: auth.currentUser.uid,
+            task: task
         };
         const programDocRef = await addDoc(loyaltyProgramRef, newLoyaltyProgram);
 
@@ -203,7 +204,7 @@ const firebaseCreateLoyaltyPlan = async (description, cardName, storeName, color
     }
 };
 
-const firebaseEditLoyaltyPlan = async (planId, updatedDescription, updatedCardName, updatedStoreName, updatedColor, updatedRewards) => {
+const firebaseEditLoyaltyPlan = async (planId, updatedDescription, updatedCardName, updatedStoreName, updatedColor, updatedRewards, updatedTask) => {
     try {
         // Update existing loyalty program document
         const programDocRef = doc(firestore, 'loyaltyPrograms', planId);
@@ -211,6 +212,7 @@ const firebaseEditLoyaltyPlan = async (planId, updatedDescription, updatedCardNa
             description: updatedDescription,
             storeName: updatedStoreName,
             rewards: updatedRewards,
+            task: updatedTask
         };
         await updateDoc(programDocRef, updatedProgramData);
 

@@ -15,7 +15,7 @@ const ColorSelector = ({ onColorChange }) => {
           key={index}
           style={[
             styles.colorButton,
-            { backgroundColor: color, borderColor: color === selectedColor ? 'black' : 'transparent' },
+            { backgroundColor: color, borderColor: color === selectedColor ? 'green' : 'transparent' },
           ]}
           onPress={() => {
             setSelectedColor(color); // Update selectedColor when a color is pressed
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    borderWidth: 2,
+    borderWidth: 5,
   },
 });
 

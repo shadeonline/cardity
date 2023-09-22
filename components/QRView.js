@@ -6,7 +6,6 @@ import { auth } from '../firebase';
 const QRView = ({ card }) => {
     const userUID = auth.currentUser?.uid;
     const cardDetails = 'cardity:'+JSON.stringify({ ...card, userUID });
-    console.log(cardDetails);
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>

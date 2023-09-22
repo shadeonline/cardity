@@ -47,6 +47,7 @@ const ProgressView = ({ card }) => {
         maxRewardStamps={maxRewardStamps}
         progress={updatedCard.progress}
         rewards={loyaltyProgram.rewards}
+        task = {loyaltyProgram.task}
       />
     </View>
   );

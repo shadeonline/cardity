@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 
-const StampTaskModal = ({ selectedStamp, progress, onCloseModal, rewards }) => {
+const StampTaskModal = ({ selectedStamp, progress, onCloseModal, rewards, task }) => {
   const rewardText = rewards ? rewards[selectedStamp] : undefined;
   const completed = progress >= selectedStamp;
 
@@ -16,7 +16,7 @@ const StampTaskModal = ({ selectedStamp, progress, onCloseModal, rewards }) => {
               <Text style={styles.modalText}>
                 {completed
                   ? 'Completed!'
-                  : 'Visit the restaurant and eat a meal to fill up this stamp!'}
+                  : task}
               </Text>
               {rewardText && (
                 <Text style={styles.modalText}>Reward: {rewardText}</Text>

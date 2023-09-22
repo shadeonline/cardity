@@ -27,7 +27,6 @@ const RewardView = ({ card }) => {
   const handleClaimReward = (reward) => {
     const userUID = auth.currentUser?.uid;
     const rewardDetails = 'reward:' + JSON.stringify({ ...reward, userUID });
-    console.log(rewardDetails);
     setSelectedReward(rewardDetails);
     setIsQRModalVisible(true);
   };

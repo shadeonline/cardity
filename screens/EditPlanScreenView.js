@@ -16,15 +16,15 @@ import ColorSelector from "../components/ColorSelector.js";
 const EditPlanScreenView = ({ route }) => {
     const navigation = useNavigation();
 
-    
-    
+
+
     const { programData } = route.params;
-    console.log(programData); //{"description": "Cool plan", "id": "NrrHUxBIMdyNZpW0zgHc", "loyaltyCard": {"cardName": " Cool place", "color": "#ffc2c7", "id": "IwgSIjXiO872Ab5eTSi2"}, "rewards": {"1": "Free food"}, "storeName": "Damn it sdasd"}
     const [editedDescription, setEditedDescription] = useState(programData.description);
     const [editedCardName, setEditedCardName] = useState(programData.loyaltyCard.cardName);
     const [editedStoreName, setEditedStoreName] = useState(programData.storeName);
     const [editedColor, setEditedColor] = useState(programData.loyaltyCard.color);
-    
+    const [editedTask, setEditedTask] = useState(programData.task);
+
     const formattedRewards = Object.keys(programData.rewards).map((stamps) => ({
         stamps,
         reward: programData.rewards[stamps],
@@ -34,7 +34,7 @@ const EditPlanScreenView = ({ route }) => {
     const addRewardField = () => {
         setEditedRewards([...editedRewards, { stamps: '', reward: '' }]);
     };
-    
+
     const removeRewardField = (index) => {
         const updatedRewards = [...editedRewards];
         updatedRewards.splice(index, 1);
@@ -60,15 +60,16 @@ const EditPlanScreenView = ({ route }) => {
             editedCardName,
             editedStoreName,
             editedColor,
-            parseRewardsInput(editedRewards)
+            parseRewardsInput(editedRewards),
+            editedTask
         );
         if (success) {
             // Plan created successfully, navigate to a success screen or handle as needed.
-            console.log('Plan Created!');
+            console.log('Plan Edited!');
             navigation.goBack();
         } else {
             // Error occurred while creating the plan
-            console.log('Plan not Created!');
+            console.log('Plan not Edited!');
         }
     };
 
@@ -108,6 +109,14 @@ const EditPlanScreenView = ({ route }) => {
                 placeholder="i.e: Earn great and awesome reward with this plan"
                 value={editedDescription}
                 onChangeText={(text) => setEditedDescription(text)}
+            />
+
+            <Text style={styles.tag}>Task:</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="i.e: Earn great and awesome reward with this plan"
+                value={editedTask}
+                onChangeText={(text) => setEditedTask(text)}
             />
 
             <Text style={styles.tag}>Color of loyalty card:</Text>

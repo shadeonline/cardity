@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
 import StampTaskModal from './StampTaskModal';
 
-const StampCard = ({ maxRewardStamps, progress, rewards }) => {
+const StampCard = ({ maxRewardStamps, progress, rewards, task }) => {
   const [selectedStamp, setSelectedStamp] = useState(null);
 
   const handleStampPress = (stampKey) => {
@@ -67,6 +67,7 @@ const StampCard = ({ maxRewardStamps, progress, rewards }) => {
       <StampTaskModal
         selectedStamp={selectedStamp}
         progress={progress}
+        task={task}
         onCloseModal={handleCloseModal} 
         rewards= {rewards}/>
     </View>
