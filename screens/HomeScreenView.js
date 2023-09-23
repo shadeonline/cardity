@@ -32,9 +32,6 @@ const HomeScreenView = () => {
   useEffect(() => {
     if (isFocused) {
       firebaseFetchProfile().then((profileData) => {
-        if (profileData && !profileData.pushToken) {
-          firebaseRequestAndStorePushToken(auth.currentUser.uid);
-        }
         if (profileData) {
           firebaseFetchCardData(profileData.loyaltyCards).then((updatedCards) => {
             setCards(updatedCards);
